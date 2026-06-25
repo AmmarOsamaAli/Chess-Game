@@ -5,7 +5,7 @@ console.log('Lets Get Started')
 const logInBtn = document.querySelector('#login-btn')
 const signUpBtn = document.querySelector('#signup-btn')
 const actualDropdown = document.querySelector('.time-control-dropdown')
-const timeControlDropdown = document.querySelector('#choosen-time-control')
+const ChoosenTimeControl = document.querySelector('#choosen-time-control')
 const dropdownArrow = document.querySelector('#dropdown-arrow')
 const StartGameBtn = document.querySelector('#start-game')
 
@@ -23,20 +23,23 @@ function goToGamePage() {
     }
 }
 
+
 function DropdownFunctionality(event) {
-    if (event.target.id === 'choosen-time-control') {
-        if (actualDropdown.style.display = 'none') {
-            actualDropdown.style.display = 'flex'
-            dropdownArrow.textContent = '▲'
-            console.log('Dropdown')
-        }
+    if ((event.target.id === 'choosen-time-control' || event.target.id === 'dropdown-arrow') && dropdownArrow.textContent === '▼') {
+        if(actualDropdown.style.display = 'none')
+        actualDropdown.style.display = 'flex'
+        dropdownArrow.textContent = '▲'
     }
-    else {
-        if(actualDropdown.style.display === 'flex'){
-            actualDropdown.style.display = 'none'
-            dropdownArrow.textContent = '▼'
-        }
+    else if((event.target.id === 'choosen-time-control' || event.target.id === 'dropdown-arrow') && dropdownArrow.textContent === '▲') {
+        if(actualDropdown.style.display = 'flex')
+        actualDropdown.style.display = 'none'
+        dropdownArrow.textContent = '▼'
+        console.log('Dropdown')
     }
+}
+
+function changeTimeControl (){
+    
 }
 
 function goToLoginInPage() {
@@ -51,7 +54,7 @@ function goToSignUpPage() {
 
 /*---------------------------Event Listeners-------------------------------*/
 
-timeControlDropdown.addEventListener('click', DropdownFunctionality)
+ChoosenTimeControl.addEventListener('click', DropdownFunctionality)
 StartGameBtn.addEventListener('click', goToGamePage)
 logInBtn.addEventListener('click', goToLoginInPage)
 signUpBtn.addEventListener('click', goToSignUpPage)
