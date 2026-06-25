@@ -74,13 +74,53 @@ body {
 }
 
 .time-control-dropdown {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 900px;
     height: 450px;
     color: white;
+}
+
+.time-control-dropdown p {
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+.time-control-dropdown button {
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 700;
+    color: white;
+    font-size: 18px;
+    border: transparent;
+    box-shadow: #ffffff;
+    background-image: linear-gradient(rgb(75, 72, 72), rgb(49, 48, 45));
+}
+
+.time-control-dropdown button:hover {
+    
+    width: 150px;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+    border: transparent;
+    background-image: linear-gradient(#504F4C, #201F1C);
+    cursor: pointer;
+}
+
+.time-control-dropdown button:focus {
+    border: solid rgb(159, 208, 93) 3px;
+}
+
+#bullet,
+#blitz,
+#rapid {
+    margin: 20px
 }
 
 #choosen-time-control-container {
@@ -104,7 +144,7 @@ body {
     background-image: linear-gradient(#9ECF5D, #70A84A);
 }
 
-#choosen-time-control span{
+#choosen-time-control span {
     position: absolute;
     right: -1px;
     margin-right: 15px;
@@ -122,44 +162,6 @@ body {
     background-image: linear-gradient(#9FD05D, #36582d);
 }
 
-#bullet,
-#blitz,
-#rapid {
-    margin: 20px
-}
-
-.time-control-dropdown p {
-    margin-bottom: 10px;
-    font-size: 25px;
-}
-
-.time-control-dropdown button {
-    width: 150px;
-    height: 50px;
-    border-radius: 10px;
-    font-weight: 700;
-    color: white;
-    font-size: 18px;
-    border: transparent;
-    box-shadow: #ffffff;
-    background-image: linear-gradient(rgb(75, 72, 72), rgb(49, 48, 45));
-}
-
-.time-control-dropdown button:hover {
-    width: 150px;
-    height: 50px;
-    border-radius: 10px;
-    font-weight: 500;
-    color: white;
-    font-size: 18px;
-    border: transparent;
-    background-image: linear-gradient(#504F4C, #201F1C);
-    cursor: pointer;
-}
-
-.time-control-dropdown button:focus{
-    border: solid rgb(159, 208, 93) 3px;
-}
 
 #start-game {
     width: 500px;
