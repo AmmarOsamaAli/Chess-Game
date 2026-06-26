@@ -54,41 +54,67 @@ let checkMate = false
 let whiteTimer = 0
 let blackTimer = 0
 let turn = 'White'
+let timer = 0
+
 
 
 /*---------------------------Functions--------------------------------*/
 
-function getTimeFromURL(){
+
+//Get time from URL based on choice in Get Started Page
+function getTimeFromURL() {
     const URLTimer = new URLSearchParams(window.location.search)
-    const selectedTimer = URLTimer.get('time')
-    return selectedTimer
+    const timerString = URLTimer.get('time')
+    const timerInMinutes = timerString.split(' ')
+    timer = timerInMinutes[0] * 60
 }
 
-function displayWhiteTimer (){
-    const countdownTimer = setInterval(()=>{
-        const minutes = Math.floor(whiteTimer / 60)
-        const seconds = whiteTimer % 60
+// Display Timer 
+function displayTimer() {
+    const displayCountDownTimer = setTimeout(() => {
+        const minutes = Math.floor(timer / 60)
+        const seconds = timer % 60
 
-        const formattedMinutes = String(minutes).padStart(2,'0')
-        const formattedSeconds = String(seconds).padStart(2,'0')
+        const formattedMinutes = String(minutes).padStart(2, '0')
+        const formattedSeconds = String(seconds).padStart(2, '0')
 
         whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-    },1000)
-
-}
-
-function displayBlackTimer (){
-    const countdownTimer = setInterval(()=>{
-        const minutes = Math.floor(blackTimer / 60)
-        const seconds = blackTimer % 60
-
-        const formattedMinutes = String(minutes).padStart(2,'0')
-        const formattedSeconds = String(seconds).padStart(2,'0')
-
         blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-    },1000)
-
+    }, 10)
 }
+
+function updateWhiteTimer() {
+    whiteTimer = timer
+    const CountDownTimer = setInterval(() => {
+        if (whiteTimer > 0) {
+            whiteTimer -= 1
+            const minutes = Math.floor(whiteTimer / 60)
+            const seconds = whiteTimer % 60
+
+            const formattedMinutes = String(minutes).padStart(2, '0')
+            const formattedSeconds = String(seconds).padStart(2, '0')
+
+            whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+        }
+    }, 1000)
+}
+
+function updateBlackTimer() {
+    blackTimer = timer
+    const CountDownTimer = setInterval(() => {
+        if (blackTimer > 0 && !turn=== 'white') {
+            blackTimer -= 1
+            const minutes = Math.floor(blackTimer / 60)
+            const seconds = blackTimer % 60
+
+            const formattedMinutes = String(minutes).padStart(2, '0')
+            const formattedSeconds = String(seconds).padStart(2, '0')
+
+            blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+        }
+    }, 1000)
+}
+
 
 
 
@@ -118,8 +144,9 @@ function deployBoardPieces() {
 function render() {
     deployBoardPieces()
     getTimeFromURL()
-    displayWhiteTimer()
-    displayBlackTimer()
+    displayTimer()
+    updateWhiteTimer()
+    updateBlackTimer()
 }
 
 
