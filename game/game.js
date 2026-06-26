@@ -5,12 +5,9 @@ const logInBtn = document.querySelector('#login-btn')
 const signUpBtn = document.querySelector('#signup-btn')
 const chessBoard = document.querySelectorAll('.board')
 const allSqaure = document.querySelectorAll('.sqr')
+const whiteTimerBtn = document.querySelector('#timer-white')
+const blackTimerBtn = document.querySelector('#timer-black')
 
-
-
-console.log(logInBtn)
-console.log(signUpBtn)
-console.log(chessBoard)
 
 /*---------------------------Constant--------------------------------*/
 
@@ -32,10 +29,10 @@ const pieceSVG = {
     bQ: `./game-pieces/black-pieces-normal/queen-black-normal.svg`,
     bK: `./game-pieces/black-pieces-normal/king-black-normal.svg`,
 
-
 }
 
 const startingBoard = [
+
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
@@ -54,13 +51,39 @@ let loser = false
 let draw = false
 let check = false
 let checkMate = false
+let whiteTimer = 0
+let blackTimer = 0
 let turn = 'White'
-let whiteTimer
-let blackTimer
 let targetID = ''
 let numberSplit = []
 
 /*---------------------------Functions--------------------------------*/
+
+function displayWhiteTimer (){
+    const countdownTimer = setInterval(()=>{
+        const minutes = Math.floor(whiteTimer / 60)
+        const seconds = whiteTimer % 60
+
+        const formattedMinutes = String(minutes).padStart(2,'0')
+        const formattedSeconds = String(seconds).padStart(2,'0')
+
+        whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+    },1000)
+
+}
+
+function displayBlackTimer (){
+    const countdownTimer = setInterval(()=>{
+        const minutes = Math.floor(blackTimer / 60)
+        const seconds = blackTimer % 60
+
+        const formattedMinutes = String(minutes).padStart(2,'0')
+        const formattedSeconds = String(seconds).padStart(2,'0')
+
+        blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+    },1000)
+
+}
 
 
 // This function gets the number of each square and stores it in a variable called index.
@@ -70,8 +93,8 @@ function getSquareIndex(target) {
 }
 
 
-
-function deployStartingBoardPieces() {
+//This function display all the board pieces in the starting position based on the startingBoard array
+function deployBoardPieces() {
     allSqaure.forEach(oneSquare => {
         const squareIndex = getSquareIndex(oneSquare.id)
         const pieceCode = startingBoard[squareIndex]
@@ -86,7 +109,9 @@ function deployStartingBoardPieces() {
 
 
 function render() {
-    deployStartingBoardPieces()
+    deployBoardPieces()
+    displayWhiteTimer()
+    displayBlackTimer()
 }
 
 
