@@ -43,9 +43,9 @@ const startingBoard = [
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
+
 /*---------------------------Variables--------------------------------*/
 
-let index = 0
 let winner = false
 let loser = false
 let draw = false
@@ -54,10 +54,15 @@ let checkMate = false
 let whiteTimer = 0
 let blackTimer = 0
 let turn = 'White'
-let targetID = ''
-let numberSplit = []
+
 
 /*---------------------------Functions--------------------------------*/
+
+function getTimeFromURL(){
+    const URLTimer = new URLSearchParams(window.location.search)
+    const selectedTimer = URLTimer.get('time')
+    return selectedTimer
+}
 
 function displayWhiteTimer (){
     const countdownTimer = setInterval(()=>{
@@ -86,9 +91,11 @@ function displayBlackTimer (){
 }
 
 
+
+
 // This function gets the number of each square and stores it in a variable called index.
 function getSquareIndex(target) {
-    numberSplit = target.split('-')
+    let numberSplit = target.split('-')
     return Number(numberSplit[1] - 1)
 }
 
@@ -110,6 +117,7 @@ function deployBoardPieces() {
 
 function render() {
     deployBoardPieces()
+    getTimeFromURL()
     displayWhiteTimer()
     displayBlackTimer()
 }

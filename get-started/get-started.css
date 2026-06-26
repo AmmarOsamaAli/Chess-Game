@@ -101,7 +101,7 @@ body {
 }
 
 .time-control-dropdown button:hover {
-    
+
     width: 150px;
     height: 50px;
     border-radius: 10px;
@@ -185,5 +185,5 @@ body {
     color: white;
     border: transparent;
     cursor: pointer;
-    background-image: linear-gradient(#9FD05D, #36582d);
+    background-image: linear-gradient(#666563, #31302D);
 }

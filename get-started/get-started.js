@@ -7,7 +7,6 @@ const signUpBtn = document.querySelector('#signup-btn')
 //Dropdown Functionality
 const actualDropdown = document.querySelector('.time-control-dropdown')
 const ChoosenTimeControl = document.querySelector('#choosen-time-control')
-const childDiv = ChoosenTimeControl.querySelector('child-div-of-choosen-timer-btn')
 const dropdownArrow = document.querySelector('#dropdown-arrow')
 const timerForGame = document.querySelectorAll('#timer-for-game')
 
@@ -18,9 +17,10 @@ const StartGameBtn = document.querySelector('#start-game')
 /*---------------------------Functions--------------------------------*/
 
 
-function goToGamePage() {
-    if (event.target.id === 'start-game') {
-        window.location.href = '../game/index.html'
+function goToGamePage(event) {
+    if (event.currentTarget.id === 'start-game') {
+        const selectedTime = encodeURIComponent(ChoosenTimeControl.textContent.trim())
+        window.location.href = `../game/index.html?time=${selectedTime}`
     }
 }
 
@@ -43,14 +43,16 @@ function goToSignUpPage() {
 
 function DropdownFunctionality(event) {
     if ((event.target.id === 'choosen-time-control' || event.target.id === 'dropdown-arrow') && dropdownArrow.textContent === '▼') {
-        if (actualDropdown.style.display = 'none')
+        if (actualDropdown.style.display = 'none') {
             actualDropdown.style.display = 'flex'
-        dropdownArrow.textContent = '▲'
+            dropdownArrow.textContent = '▲'
+        }
     }
     else if ((event.target.id === 'choosen-time-control' || event.target.id === 'dropdown-arrow') && dropdownArrow.textContent === '▲') {
-        if (actualDropdown.style.display = 'flex')
+        if (actualDropdown.style.display = 'flex') {
             actualDropdown.style.display = 'none'
-        dropdownArrow.textContent = '▼'
+            dropdownArrow.textContent = '▼'
+        }
     }
 }
 
@@ -63,18 +65,19 @@ function chooseTimeControl(event) {
 }
 
 
-    /*---------------------------Event Listeners-------------------------------*/
+/*---------------------------Event Listeners-------------------------------*/
 
 
-    //Drop Down Fucntionality
-    ChoosenTimeControl.addEventListener('click', DropdownFunctionality)
-    timerForGame.forEach(oneTimer => oneTimer.addEventListener('click', chooseTimeControl))
+//Drop Down Fucntionality
+ChoosenTimeControl.addEventListener('click', DropdownFunctionality)
+
+timerForGame.forEach(oneTimer => oneTimer.addEventListener('click', chooseTimeControl))
 
 
-    //Start Game
-    StartGameBtn.addEventListener('click', goToGamePage)
+//Start Game
+StartGameBtn.addEventListener('click', goToGamePage)
 
 
-    // Authentication
-    logInBtn.addEventListener('click', goToLoginInPage)
-    signUpBtn.addEventListener('click', goToSignUpPage)
+// Authentication
+logInBtn.addEventListener('click', goToLoginInPage)
+signUpBtn.addEventListener('click', goToSignUpPage)
