@@ -70,7 +70,9 @@ body {
     color: white;
     font-size: 50px;
     font-weight: 900;
+    display: flex;
 }
+
 
 .board {
     display: flex;
@@ -84,14 +86,42 @@ body {
 .dark-sqr {
     width: 80px;
     aspect-ratio: 1/1;
-    font-size: 64px;
+    font-size: 60px;
     text-align: center;
 }
 
-.white-sqr{
+.white-sqr {
     background-color: #EBECD0;
 }
 
-.dark-sqr{
+.dark-sqr {
     background-color: #739552;
 }
+
+#timer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 640px;
+    width: 200px;
+}
+
+#timer button{ 
+    margin: 10px;   
+    border-radius: 8px;
+    height: 50px;
+    width: 195px;
+}
+
+#timer #timer-white{
+    background-color: white;
+}
+
+#timer #timer-black{
+    background-color: rgb(78, 76, 76);
+}
+
+
+
+
+

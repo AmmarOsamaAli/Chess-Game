@@ -4,6 +4,7 @@
 const logInBtn = document.querySelector('#login-btn')
 const signUpBtn = document.querySelector('#signup-btn')
 const chessBoard = document.querySelectorAll('.board')
+const allSqaure = document.querySelectorAll('.sqr')
 
 
 
@@ -15,74 +16,65 @@ console.log(chessBoard)
 
 const pieceSVG = {
 
-    //White Pieces Normal
-    wPN: `./game-pieces/white-pieces-normal/pawn-white-normal.svg`,
-    wNN: `./game-pieces/white-pieces-normal/knight-white-normal.svg`,
-    wBN: `./game-pieces/white-pieces-normal/bishop-white-normal.svg`,
-    wRN: `./game-pieces/white-pieces-normal/rook-white-normal.svg`,
-    wQN: `./game-pieces/white-pieces-normal/queen-white-normal.svg`,
-    wKN: `./game-pieces/white-pieces-normal/king-white-normal.svg`,
+    //White Pieces 
+    wP: `./game-pieces/white-pieces-normal/pawn-white-normal.svg`,
+    wN: `./game-pieces/white-pieces-normal/knight-white-normal.svg`,
+    wB: `./game-pieces/white-pieces-normal/bishop-white-normal.svg`,
+    wR: `./game-pieces/white-pieces-normal/rook-white-normal.svg`,
+    wQ: `./game-pieces/white-pieces-normal/queen-white-normal.svg`,
+    wK: `./game-pieces/white-pieces-normal/king-white-normal.svg`,
 
-    //White Pieces Reversed
-    wPR: `./game-pieces/white-pieces-reversed/pawn-white-reversed.svg`,
-    wNR: `./game-pieces/white-pieces-reversed/knight-white-reversed.svg`,
-    wBR: `./game-pieces/white-pieces-reversed/bishop-white-reversed.svg`,
-    wRR: `./game-pieces/white-pieces-reversed/rook-white-reversed.svg`,
-    wQR: `./game-pieces/white-pieces-reversed/queen-white-reversed.svg`,
-    wKR: `./game-pieces/white-pieces-reversed/king-white-reversed.svg`,
-
-
-    //Black Pieces Normal
-    bPN: `./game-pieces/black-pieces-normal/pawn-black-normal.svg`,
-    bNN: `./game-pieces/black-pieces-normal/knight-black-normal.svg`,
-    bBN: `./game-pieces/black-pieces-normal/bishop-black-normal.svg`,
-    bRN: `./game-pieces/black-pieces-normal/rook-black-normal.svg`,
-    bQN: `./game-pieces/black-pieces-normal/queen-black-normal.svg`,
-    bKN: `./game-pieces/black-pieces-normal/king-black-normal.svg`,
-
-    //Black Pieces Reversed
-    bPR: `./game-pieces/black-pieces-reversed/pawn-black-reversed.svg`,
-    bNR: `./game-pieces/black-pieces-reversed/knight-black-reversed.svg`,
-    bBR: `./game-pieces/black-pieces-reversed/bishop-black-reversed.svg`,
-    bRR: `./game-pieces/black-pieces-reversed/rook-black-reversed.svg`,
-    bQR: `./game-pieces/black-pieces-reversed/queen-black-reversed.svg`,
-    bKR: `./game-pieces/black-pieces-reversed/king-black-reversed.svg`,
-
+    //Black Pieces 
+    bP: `./game-pieces/black-pieces-normal/pawn-black-normal.svg`,
+    bN: `./game-pieces/black-pieces-normal/knight-black-normal.svg`,
+    bB: `./game-pieces/black-pieces-normal/bishop-black-normal.svg`,
+    bR: `./game-pieces/black-pieces-normal/rook-black-normal.svg`,
+    bQ: `./game-pieces/black-pieces-normal/queen-black-normal.svg`,
+    bK: `./game-pieces/black-pieces-normal/king-black-normal.svg`,
 
 
 }
 
 const startingBoard = [
 
+    'bR', 'bB', 'bN', 'bQ', 'bK', 'bN', 'bB', 'bR',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+    'wR', 'wB', 'wN', 'wQ', 'wK', 'wN', 'wB', 'wR',
 ]
 
+/*---------------------------Variables--------------------------------*/
+
+let index = 0
+let winner = false
+let loser = false
+let draw = false
+let check = false
+let checkMate = false
+let turn = 'White'
+let whiteTimer
+let blackTimer
+let targetID = ''
+let numberSplit = []
 
 /*---------------------------Functions--------------------------------*/
 
 
-function CheckChessBoard(event) {
-    console.log(event.target)
-    console.log(pieceSVG)
+// This function gets the number of each square and stores it in a variable called index.
+function getNumberOfEachSquare(event) {
+    targetID = event.target.id
+    numberSplit = targetID.split('-')
+    index = numberSplit[1]
+    console.log(index)
 }
 
-function checkStartingBoard() {
-    startingBoard.forEach(oneSquare => {
-        console.log(oneSquare)
-    })
-}
 
-checkStartingBoard()
 
-function render() {
-    
+function render(event) {
 }
 
 
@@ -91,7 +83,7 @@ function init() {
     render()
 }
 
-
+init()
 
 //Authentication
 function goToLoginInPage() {
@@ -107,10 +99,9 @@ function goToSignUpPage() {
 /*---------------------------Event Listeners-------------------------------*/
 
 
-chessBoard.forEach((oneColumn) => {
-    oneColumn.addEventListener('click', CheckChessBoard)
+allSqaure.forEach((oneSquare) => {
+    oneSquare.addEventListener('click', getNumberOfEachSquare)
 })
-
 
 
 //Authentication
