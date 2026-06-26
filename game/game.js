@@ -120,6 +120,13 @@ function getSquareIndex(target) {
     return Number(numberSplit[1] - 1)
 }
 
+function getPieceCode(){
+    const square = event.target.closest('.sqr')
+    const index = getSquareIndex(square.id)
+    const pieceCode = startingBoard[index]
+    return pieceCode
+}
+
 
 //This function display all the board pieces in the starting position based on the startingBoard array
 function deployBoardPieces() {
@@ -167,7 +174,9 @@ function goToSignUpPage() {
 /*---------------------------Event Listeners-------------------------------*/
 
 
-
+allSqaure.forEach((oneSquare)=>{
+    oneSquare.addEventListener('click',getPieceCode)
+})
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)
