@@ -1,3 +1,6 @@
+
+import { getPawnMoves } from './pieceMoves.js'
+
 /*---------------------------Cached Elemetns--------------------------------*/
 
 //Authentication
@@ -36,8 +39,8 @@ const startingBoard = [
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', 'bP', '',
+    '', '', '', '', 'wP', '', '', '',
     '', '', '', '', '', '', '', '',
     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
@@ -55,6 +58,8 @@ let whiteTimer = 0
 let blackTimer = 0
 let turn = 'white'
 let timer = 0
+
+
 
 
 
@@ -120,12 +125,40 @@ function getSquareIndex(target) {
     return Number(numberSplit[1] - 1)
 }
 
-function getPieceCode(){
+function getPieceCode() {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
     const pieceCode = startingBoard[index]
+
+    movePawn(pieceCode)
     return pieceCode
 }
+
+
+function movePawn(pieceCode) {
+    const pawnSquare = event.target.closest('.sqr')
+    let pawnIndex = getSquareIndex(pawnSquare.id)
+    let pawnCode = startingBoard[pawnIndex]
+    if (pawnCode === 'wP' || pawnCode === 'bP') {
+        let SelectedPawnIndex = pawnIndex
+        console.log(getPawnMoves(SelectedPawnIndex, pawnCode))
+      
+    }
+
+
+
+    // else if (pawnCode === 'bP' && pawnIndex > 47 && pawnIndex < 56) {
+    //     console.log('This is a black pawn and this is its first move')
+    // }
+    // else if (pawnCode === 'wP' && pawnIndex > 8 && pawnIndex <= 63) {
+    //     console.log('This is a white pawn and this is not its first move')
+    // }
+    // else if (pawnCode === 'bP' && pawnIndex < 48 && pawnIndex > 0)
+    //     console.log('This is a black pawn and this is not its first move')
+
+
+}
+
 
 
 //This function display all the board pieces in the starting position based on the startingBoard array
@@ -140,6 +173,10 @@ function deployBoardPieces() {
             oneSquare.appendChild(pieceImage)
         }
     })
+}
+
+function swithcPlayerTurn() {
+
 }
 
 
@@ -173,10 +210,12 @@ function goToSignUpPage() {
 
 /*---------------------------Event Listeners-------------------------------*/
 
-
-allSqaure.forEach((oneSquare)=>{
-    oneSquare.addEventListener('click',getPieceCode)
+// To get Piece Code
+allSqaure.forEach((oneSquare) => {
+    oneSquare.addEventListener('click', getPieceCode)
 })
+
+
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)
