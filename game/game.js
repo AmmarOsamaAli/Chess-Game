@@ -39,8 +39,8 @@ const startingBoard = [
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', 'bP', '',
-    '', '', '', '', 'wP', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
@@ -58,7 +58,8 @@ let whiteTimer = 0
 let blackTimer = 0
 let turn = 'white'
 let timer = 0
-
+let selectedSourceIndex = null
+let possibleMoves = []
 
 
 
@@ -114,7 +115,6 @@ function updateTimer() {
 
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         }
-
     }, 1000)
 }
 
@@ -135,29 +135,30 @@ function getPieceCode() {
 }
 
 
+// This function will the move pawn 
 function movePawn(pieceCode) {
     const pawnSquare = event.target.closest('.sqr')
     let pawnIndex = getSquareIndex(pawnSquare.id)
     let pawnCode = startingBoard[pawnIndex]
-    if (pawnCode === 'wP' || pawnCode === 'bP') {
-        let SelectedPawnIndex = pawnIndex
-        console.log(getPawnMoves(SelectedPawnIndex, pawnCode))
-      
+    if (selectedSourceIndex === null) {
+        if (!pawnCode) return
+        selectedSourceIndex = pawnIndex
+        possibleMoves = getPawnMoves(pawnIndex, pawnCode)
+        return
     }
-
-
-
-    // else if (pawnCode === 'bP' && pawnIndex > 47 && pawnIndex < 56) {
-    //     console.log('This is a black pawn and this is its first move')
-    // }
-    // else if (pawnCode === 'wP' && pawnIndex > 8 && pawnIndex <= 63) {
-    //     console.log('This is a white pawn and this is not its first move')
-    // }
-    // else if (pawnCode === 'bP' && pawnIndex < 48 && pawnIndex > 0)
-    //     console.log('This is a black pawn and this is not its first move')
-
-
+    let targetIndex = pawnIndex
+    if (possibleMoves.includes(targetIndex)) {
+        startingBoard[targetIndex] = startingBoard[selectedSourceIndex]
+        startingBoard[selectedSourceIndex] = ''
+        selectedSourceIndex = null
+        possibleMoves = []
+        deployBoardPieces()
+    } else {
+        selectedSourceIndex = null
+        possibleMoves = []
+    }
 }
+
 
 
 
@@ -167,6 +168,7 @@ function deployBoardPieces() {
         const squareIndex = getSquareIndex(oneSquare.id)
         const pieceCode = startingBoard[squareIndex]
 
+        oneSquare.innerHTML = ''
         if (pieceCode) {
             const pieceImage = document.createElement('img')
             pieceImage.src = pieceSVG[pieceCode]
