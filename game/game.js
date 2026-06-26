@@ -53,7 +53,7 @@ let check = false
 let checkMate = false
 let whiteTimer = 0
 let blackTimer = 0
-let turn = 'White'
+let turn = 'white'
 let timer = 0
 
 
@@ -67,6 +67,8 @@ function getTimeFromURL() {
     const timerString = URLTimer.get('time')
     const timerInMinutes = timerString.split(' ')
     timer = timerInMinutes[0] * 60
+    whiteTimer = timerInMinutes[0] * 60
+    blackTimer = timerInMinutes[0] * 60
 }
 
 // Display Timer 
@@ -83,10 +85,10 @@ function displayTimer() {
     }, 10)
 }
 
-function updateWhiteTimer() {
-    whiteTimer = timer
+
+function updateTimer() {
     const CountDownTimer = setInterval(() => {
-        if (whiteTimer > 0) {
+        if (whiteTimer > 0 && turn === 'white') {
             whiteTimer -= 1
             const minutes = Math.floor(whiteTimer / 60)
             const seconds = whiteTimer % 60
@@ -95,14 +97,9 @@ function updateWhiteTimer() {
             const formattedSeconds = String(seconds).padStart(2, '0')
 
             whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-        }
-    }, 1000)
-}
 
-function updateBlackTimer() {
-    blackTimer = timer
-    const CountDownTimer = setInterval(() => {
-        if (blackTimer > 0 && !turn=== 'white') {
+        }
+        else if (blackTimer > 0 && turn === 'black') {
             blackTimer -= 1
             const minutes = Math.floor(blackTimer / 60)
             const seconds = blackTimer % 60
@@ -112,11 +109,9 @@ function updateBlackTimer() {
 
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         }
+
     }, 1000)
 }
-
-
-
 
 
 // This function gets the number of each square and stores it in a variable called index.
@@ -145,8 +140,7 @@ function render() {
     deployBoardPieces()
     getTimeFromURL()
     displayTimer()
-    updateWhiteTimer()
-    updateBlackTimer()
+    updateTimer()
 }
 
 
