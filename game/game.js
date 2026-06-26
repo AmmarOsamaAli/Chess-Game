@@ -36,15 +36,14 @@ const pieceSVG = {
 }
 
 const startingBoard = [
-
-    'bR', 'bB', 'bN', 'bQ', 'bK', 'bN', 'bB', 'bR',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
+    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-    'wR', 'wB', 'wN', 'wQ', 'wK', 'wN', 'wB', 'wR',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
 /*---------------------------Variables--------------------------------*/
@@ -65,16 +64,29 @@ let numberSplit = []
 
 
 // This function gets the number of each square and stores it in a variable called index.
-function getNumberOfEachSquare(event) {
-    targetID = event.target.id
-    numberSplit = targetID.split('-')
-    index = numberSplit[1]
-    console.log(index)
+function getSquareIndex(target) {
+    numberSplit = target.split('-')
+    return Number(numberSplit[1] - 1)
 }
 
 
 
-function render(event) {
+function deployStartingBoardPieces() {
+    allSqaure.forEach(oneSquare => {
+        const squareIndex = getSquareIndex(oneSquare.id)
+        const pieceCode = startingBoard[squareIndex]
+
+        if (pieceCode) {
+            const pieceImage = document.createElement('img')
+            pieceImage.src = pieceSVG[pieceCode]
+            oneSquare.appendChild(pieceImage)
+        }
+    })
+}
+
+
+function render() {
+    deployStartingBoardPieces()
 }
 
 
@@ -84,6 +96,8 @@ function init() {
 }
 
 init()
+
+
 
 //Authentication
 function goToLoginInPage() {
@@ -99,9 +113,6 @@ function goToSignUpPage() {
 /*---------------------------Event Listeners-------------------------------*/
 
 
-allSqaure.forEach((oneSquare) => {
-    oneSquare.addEventListener('click', getNumberOfEachSquare)
-})
 
 
 //Authentication
