@@ -6,7 +6,7 @@ import { getPawnMoves } from './pieceMoves.js'
 //Authentication
 const logInBtn = document.querySelector('#login-btn')
 const signUpBtn = document.querySelector('#signup-btn')
-const chessBoard = document.querySelectorAll('.board')
+const chessBoard = document.querySelector('.board')
 const allSqaure = document.querySelectorAll('.sqr')
 const whiteTimerBtn = document.querySelector('#timer-white')
 const blackTimerBtn = document.querySelector('#timer-black')
@@ -161,19 +161,15 @@ function checkPlayerTurn(pieceCode) {
     let pieceCodeSplit = []
     pieceCodeSplit = pieceCode.slice(0, 1)
     if (pieceCodeSplit === 'w' && turn === 'white') {
-        console.log('this white piece can move')
         return true
     }
     else if (pieceCodeSplit === 'w' && turn !== 'white') {
-        console.log('this white piece can not move')
         return false
     }
     else if (pieceCodeSplit === 'b' && turn === 'black') {
-        console.log('this black piece can move')
         return true
     }
     else if (pieceCodeSplit === 'b' && turn !== 'black') {
-        console.log('this black piece can not move')
         return false
     }
 
@@ -182,12 +178,14 @@ function checkPlayerTurn(pieceCode) {
 
 function swithcPlayerTurn() {
     if (turn === 'white') {
-        console.log('white played now it black turn')
+        chessBoard.classList.add()
         turn = 'black'
+        chessBoard.classList.add('board-flipped')
     }
     else if (turn === 'black') {
-        console.log('black played, now its whites turn')
         turn = 'white'
+        chessBoard.classList.remove('board-flipped')
+
     }
 }
 

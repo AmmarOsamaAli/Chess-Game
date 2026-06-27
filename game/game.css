@@ -78,7 +78,7 @@ body {
     display: flex;
     border: 1px solid black;
     width: 642px;
-    height: 642px
+    height: 642px;
 }
 
 
@@ -95,7 +95,6 @@ body {
     width: 90%;
     height: 90%;
     position: absolute;
-  
     transform: translate(-50%, 5%);
 }
 
@@ -140,5 +139,9 @@ body {
 }
 
 .board-flipped {
+    transform: rotate(180deg);
+}
 
+.board-flipped img{
+    transform: translate(-50%, 5%) rotate(180deg);
 }
