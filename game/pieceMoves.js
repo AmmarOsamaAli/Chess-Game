@@ -1,4 +1,5 @@
 
+
 export function getPawnMoves(sourceIndex, pawnCode) {
     const possibleMoves = []
     const rank = Math.floor(sourceIndex / 8)
@@ -36,6 +37,23 @@ export function getRookMoves(sourceIndex, rookCode) {
                 possibleMoves.push(sourceIndex + 4)
                 possibleMoves.push(sourceIndex + 5)
                 possibleMoves.push(sourceIndex + 6)
+                possibleMoves.push(sourceIndex + 7)
+                possibleMoves.push(sourceIndex + 8)
+                possibleMoves.push(sourceIndex + 16)
+                possibleMoves.push(sourceIndex + 24)
+                possibleMoves.push(sourceIndex + 32)
+                possibleMoves.push(sourceIndex + 40)
+                possibleMoves.push(sourceIndex + 48)
+                possibleMoves.push(sourceIndex + 56)
+            }
+            else if (column === 1) {
+                possibleMoves.push(sourceIndex - 1)
+                possibleMoves.push(sourceIndex + 1)
+                possibleMoves.push(sourceIndex + 2)
+                possibleMoves.push(sourceIndex + 3)
+                possibleMoves.push(sourceIndex + 4)
+                possibleMoves.push(sourceIndex + 5)
+                possibleMoves.push(sourceIndex + 6)
                 possibleMoves.push(sourceIndex + 8)
                 possibleMoves.push(sourceIndex + 16)
                 possibleMoves.push(sourceIndex + 24)
@@ -46,6 +64,43 @@ export function getRookMoves(sourceIndex, rookCode) {
             }
         }
     }
+    if (rookCode === 'bR') {
+        if (rank === 7) {
+            if (column === 7) {
+                possibleMoves.push(sourceIndex - 1)
+                possibleMoves.push(sourceIndex - 2)
+                possibleMoves.push(sourceIndex - 3)
+                possibleMoves.push(sourceIndex - 4)
+                possibleMoves.push(sourceIndex - 5)
+                possibleMoves.push(sourceIndex - 6)
+                possibleMoves.push(sourceIndex - 7)
+                possibleMoves.push(sourceIndex - 8)
+                possibleMoves.push(sourceIndex - 16)
+                possibleMoves.push(sourceIndex - 24)
+                possibleMoves.push(sourceIndex - 32)
+                possibleMoves.push(sourceIndex - 40)
+                possibleMoves.push(sourceIndex - 48)
+                possibleMoves.push(sourceIndex - 56)
+            }
+            if (column === 6) {
+                possibleMoves.push(sourceIndex + 1)
+                possibleMoves.push(sourceIndex - 1)
+                possibleMoves.push(sourceIndex - 2)
+                possibleMoves.push(sourceIndex - 3)
+                possibleMoves.push(sourceIndex - 4)
+                possibleMoves.push(sourceIndex - 5)
+                possibleMoves.push(sourceIndex - 6)
+                possibleMoves.push(sourceIndex + 8)
+                possibleMoves.push(sourceIndex + 16)
+                possibleMoves.push(sourceIndex + 24)
+                possibleMoves.push(sourceIndex + 32)
+                possibleMoves.push(sourceIndex + 40)
+                possibleMoves.push(sourceIndex + 48)
+                possibleMoves.push(sourceIndex + 56)
+            }
+        }
+    }
+
     return possibleMoves
 }
 

@@ -42,14 +42,14 @@ const pieceSVG = {
 
 const boardDisplay = [
 
-    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+    'wR', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    'bR', '', '', '', '', '', '', '',
 ]
 
 
@@ -127,11 +127,25 @@ function getPieceCode() {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
     const pieceCode = boardDisplay[index]
-
     movePiece(pieceCode)
-    // moveRook(pieceCode)
 }
 
+function getBoardCoordinate(coordinateOfpieceIndex) {
+    const pieceSquare = event.target.closest('.sqr')
+    let pieceIndex = getSquareIndex(pieceSquare.id)
+    const rank = Math.floor(pieceIndex / 8) + 1
+    let file = (pieceIndex % 8) + 1
+
+    if (file === 1) { file = 'A' }
+    else if (file === 2) { file = 'B' }
+    else if (file === 3) { file = 'C' }
+    else if (file === 4) { file = 'D' }
+    else if (file === 5) { file = 'E' }
+    else if (file === 6) { file = 'F' }
+    else if (file === 7) { file = 'G' }
+    else if (file === 8) { file = 'H' }
+    return `${file}${rank}`
+}
 
 
 // This function will the move any piece 
@@ -150,7 +164,7 @@ function movePiece(movePieceCode) {
                 possibleMoves = getPawnMoves(pieceIndex, pieceCode)
                 return
             }
-            else if(movePieceCode === 'wR' || movePieceCode === 'bR') {
+            else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
                 selectedSourceIndex = pieceIndex
                 possibleMoves = getRookMoves(pieceIndex, pieceCode)
                 return
@@ -259,6 +273,9 @@ allSqaure.forEach((oneSquare) => {
     oneSquare.addEventListener('click', getPieceCode)
 })
 
+allSqaure.forEach((oneSquare) => {
+    oneSquare.addEventListener('click', getBoardCoordinate)
+})
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)
