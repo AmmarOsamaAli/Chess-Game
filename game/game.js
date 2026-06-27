@@ -178,14 +178,17 @@ function checkPlayerTurn(pieceCode) {
 
 function swithcPlayerTurn() {
     if (turn === 'white') {
-        chessBoard.classList.add()
         turn = 'black'
         chessBoard.classList.add('board-flipped')
+        whiteTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
+        blackTimerBtn.style.backgroundColor = 'white'
+
     }
     else if (turn === 'black') {
         turn = 'white'
         chessBoard.classList.remove('board-flipped')
-
+        blackTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
+        whiteTimerBtn.style.backgroundColor = 'white'
     }
 }
 
