@@ -42,14 +42,14 @@ const pieceSVG = {
 
 const boardDisplay = [
 
-    'wR', 'wN', '', '', '', '', '', '',
-    '', '', 'wP', '', '', '', '', '',
+    'wR', 'wB', 'wN', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
+    '', '', '', 'bB', 'wB', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    'bR', 'bN', '', '', '', '', '', '',
+    'bR', 'bB', 'bN', '', '', '', '', '',
 ]
 
 
@@ -227,7 +227,7 @@ function movePiece(movePieceCode) {
             getBoardCoordinate(targetIndex)
             deployBoardPieces()
             swithcPlayerTurn()
-            
+
         } else {
             selectedSourceIndex = null
             possibleMoves = []
