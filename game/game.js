@@ -147,7 +147,12 @@ function getBoardCoordinate(codeOfIndex) {
     console.log(`${file}${rank}`)
 }
 
+function clearPossibleMoveHighlights() {
+    document.querySelectorAll('.move-dot').forEach(dot => dot.remove())
+}
+
 function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
+    clearPossibleMoveHighlights()
     let highlightedMoves = []
     if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode)
     else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode)
@@ -156,7 +161,7 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode)
     else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode)
 
-    for(let oneSquareMove of highlightedMoves){
+    for (let oneSquareMove of highlightedMoves) {
         const oneSquare = document.getElementById(`sqr-${oneSquareMove + 1}`)
         if (!oneSquare) return
 
@@ -176,18 +181,19 @@ function movePiece(movePieceCode) {
         return
     }
     else {
+        getSquareOfPossibleMoves(pieceIndex, pieceCode)
         if (selectedSourceIndex === null) {
             if (!pieceCode) return
+
             if (movePieceCode === 'wP' || movePieceCode === 'bP') {
                 selectedSourceIndex = pieceIndex
                 possibleMoves = getPawnMoves(pieceIndex, pieceCode)
-                getSquareOfPossibleMoves(pieceIndex, pieceCode)
+
                 return
             }
             else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
                 selectedSourceIndex = pieceIndex
                 possibleMoves = getRookMoves(pieceIndex, pieceCode)
-                getSquareOfPossibleMoves(pieceIndex, pieceCode)
                 return
             }
             else if (movePieceCode === 'wN' || movePieceCode === 'bN') {
@@ -221,6 +227,7 @@ function movePiece(movePieceCode) {
             getBoardCoordinate(targetIndex)
             deployBoardPieces()
             swithcPlayerTurn()
+            
         } else {
             selectedSourceIndex = null
             possibleMoves = []
