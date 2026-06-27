@@ -1,5 +1,11 @@
-
 import { getPawnMoves } from './pieceMoves.js'
+import { getRookMoves } from './pieceMoves.js'
+import { getKnightMoves } from './pieceMoves.js'
+import { getBishopMoves } from './pieceMoves.js'
+import { getQueenMoves } from './pieceMoves.js'
+import { getKingMoves } from './pieceMoves.js'
+
+
 
 /*---------------------------Cached Elemetns--------------------------------*/
 
@@ -122,27 +128,35 @@ function getPieceCode() {
     const index = getSquareIndex(square.id)
     const pieceCode = boardDisplay[index]
 
-    movePawn(pieceCode)
-    return pieceCode
+    movePiece(pieceCode)
+    // moveRook(pieceCode)
 }
 
 
-// This function will the move pawn 
-function movePawn(pieceCode) {
-    const pawnSquare = event.target.closest('.sqr')
-    let pawnIndex = getSquareIndex(pawnSquare.id)
-    let pawnCode = boardDisplay[pawnIndex]
-    if (checkPlayerTurn(pawnCode) === false) {
+
+// This function will the move any piece 
+function movePiece(movePieceCode) {
+    const pieceSquare = event.target.closest('.sqr')
+    let pieceIndex = getSquareIndex(pieceSquare.id)
+    let pieceCode = boardDisplay[pieceIndex]
+    if (checkPlayerTurn(pieceCode) === false) {
         return
     }
-    else{
+    else {
         if (selectedSourceIndex === null) {
-            if (!pawnCode) return
-            selectedSourceIndex = pawnIndex
-            possibleMoves = getPawnMoves(pawnIndex, pawnCode)
-            return
+            if (!pieceCode) return
+            if (movePieceCode === 'wP' || movePieceCode === 'bP') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getPawnMoves(pieceIndex, pieceCode)
+                return
+            }
+            else if(movePieceCode === 'wR' || movePieceCode === 'bR') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getRookMoves(pieceIndex, pieceCode)
+                return
+            }
         }
-        let targetIndex = pawnIndex
+        let targetIndex = pieceIndex
         if (possibleMoves.includes(targetIndex)) {
             boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
             boardDisplay[selectedSourceIndex] = ''
@@ -188,7 +202,7 @@ function swithcPlayerTurn() {
         turn = 'white'
         chessBoard.classList.remove('board-flipped')
         blackTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
-        whiteTimerBtn.style.backgroundColor = 'white'
+        blackTimerBtn.style.backgroundColor = 'white'
     }
 }
 
