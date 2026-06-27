@@ -51,7 +51,7 @@ export function getRookMoves(sourceIndex, rookCode) {
 
 
 export function getKnightMoves(sourceIndex, knightCode) {
-
+    
 }
 
 export function getBishopMoves(sourceIndex, bishopCode) {

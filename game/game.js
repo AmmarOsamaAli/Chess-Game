@@ -42,14 +42,14 @@ const pieceSVG = {
 
 const boardDisplay = [
 
-    'wR', '', '', '', '', '', '', '',
+    'wR', 'wN', '', '', '', '', '', '',
+    '', '', 'wP', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    'bR', '', '', '', '', '', '', '',
+    'bR', 'bN', '', '', '', '', '', '',
 ]
 
 
@@ -144,7 +144,26 @@ function getBoardCoordinate(codeOfIndex) {
     else if (file === 6) { file = 'F' }
     else if (file === 7) { file = 'G' }
     else if (file === 8) { file = 'H' }
-    console.log (`${file}${rank}`)
+    console.log(`${file}${rank}`)
+}
+
+function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
+    let highlightedMoves = []
+    if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wN' || pieceCode === 'bN') highlightedMoves = getKnightMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode)
+
+    for(let oneSquareMove of highlightedMoves){
+        const oneSquare = document.getElementById(`sqr-${oneSquareMove + 1}`)
+        if (!oneSquare) return
+
+        const dot = document.createElement('div')
+        dot.classList.add('move-dot')
+        oneSquare.appendChild(dot)
+    }
 }
 
 
@@ -162,13 +181,36 @@ function movePiece(movePieceCode) {
             if (movePieceCode === 'wP' || movePieceCode === 'bP') {
                 selectedSourceIndex = pieceIndex
                 possibleMoves = getPawnMoves(pieceIndex, pieceCode)
+                getSquareOfPossibleMoves(pieceIndex, pieceCode)
                 return
             }
             else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
                 selectedSourceIndex = pieceIndex
                 possibleMoves = getRookMoves(pieceIndex, pieceCode)
+                getSquareOfPossibleMoves(pieceIndex, pieceCode)
                 return
             }
+            else if (movePieceCode === 'wN' || movePieceCode === 'bN') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getKnightMoves(pieceIndex, pieceCode)
+                return
+            }
+            else if (movePieceCode === 'wB' || movePieceCode === 'bB') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getBishopMoves(pieceIndex, pieceCode)
+                return
+            }
+            else if (movePieceCode === 'wQ' || movePieceCode === 'bQ') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getQueenMoves(pieceIndex, pieceCode)
+                return
+            }
+            else if (movePieceCode === 'wK' || movePieceCode === 'bK') {
+                selectedSourceIndex = pieceIndex
+                possibleMoves = getKingMoves(pieceIndex, pieceCode)
+                return
+            }
+
         }
         let targetIndex = pieceIndex
         if (possibleMoves.includes(targetIndex)) {
