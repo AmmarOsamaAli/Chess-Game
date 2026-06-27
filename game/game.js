@@ -34,7 +34,7 @@ const pieceSVG = {
 
 }
 
-const startingBoard = [
+const boardDisplay = [
 
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
@@ -63,7 +63,6 @@ let possibleMoves = []
 
 
 
-
 /*---------------------------Functions--------------------------------*/
 
 
@@ -82,10 +81,8 @@ function displayTimer() {
     const displayCountDownTimer = setTimeout(() => {
         const minutes = Math.floor(timer / 60)
         const seconds = timer % 60
-
         const formattedMinutes = String(minutes).padStart(2, '0')
         const formattedSeconds = String(seconds).padStart(2, '0')
-
         whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
     }, 10)
@@ -98,21 +95,16 @@ function updateTimer() {
             whiteTimer -= 1
             const minutes = Math.floor(whiteTimer / 60)
             const seconds = whiteTimer % 60
-
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
-
             whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-
         }
         else if (blackTimer > 0 && turn === 'black') {
             blackTimer -= 1
             const minutes = Math.floor(blackTimer / 60)
             const seconds = blackTimer % 60
-
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
-
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         }
     }, 1000)
@@ -128,7 +120,7 @@ function getSquareIndex(target) {
 function getPieceCode() {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
-    const pieceCode = startingBoard[index]
+    const pieceCode = boardDisplay[index]
 
     movePawn(pieceCode)
     return pieceCode
@@ -139,34 +131,73 @@ function getPieceCode() {
 function movePawn(pieceCode) {
     const pawnSquare = event.target.closest('.sqr')
     let pawnIndex = getSquareIndex(pawnSquare.id)
-    let pawnCode = startingBoard[pawnIndex]
-    if (selectedSourceIndex === null) {
-        if (!pawnCode) return
-        selectedSourceIndex = pawnIndex
-        possibleMoves = getPawnMoves(pawnIndex, pawnCode)
+    let pawnCode = boardDisplay[pawnIndex]
+    if (checkPlayerTurn(pawnCode) === false) {
         return
     }
-    let targetIndex = pawnIndex
-    if (possibleMoves.includes(targetIndex)) {
-        startingBoard[targetIndex] = startingBoard[selectedSourceIndex]
-        startingBoard[selectedSourceIndex] = ''
-        selectedSourceIndex = null
-        possibleMoves = []
-        deployBoardPieces()
-    } else {
-        selectedSourceIndex = null
-        possibleMoves = []
+    else{
+        if (selectedSourceIndex === null) {
+            if (!pawnCode) return
+            selectedSourceIndex = pawnIndex
+            possibleMoves = getPawnMoves(pawnIndex, pawnCode)
+            return
+        }
+        let targetIndex = pawnIndex
+        if (possibleMoves.includes(targetIndex)) {
+            boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
+            boardDisplay[selectedSourceIndex] = ''
+            selectedSourceIndex = null
+            possibleMoves = []
+            deployBoardPieces()
+            swithcPlayerTurn()
+        } else {
+            selectedSourceIndex = null
+            possibleMoves = []
+        }
+    }
+}
+
+function checkPlayerTurn(pieceCode) {
+    let pieceCodeSplit = []
+    pieceCodeSplit = pieceCode.slice(0, 1)
+    if (pieceCodeSplit === 'w' && turn === 'white') {
+        console.log('this white piece can move')
+        return true
+    }
+    else if (pieceCodeSplit === 'w' && turn !== 'white') {
+        console.log('this white piece can not move')
+        return false
+    }
+    else if (pieceCodeSplit === 'b' && turn === 'black') {
+        console.log('this black piece can move')
+        return true
+    }
+    else if (pieceCodeSplit === 'b' && turn !== 'black') {
+        console.log('this black piece can not move')
+        return false
+    }
+
+}
+
+
+function swithcPlayerTurn() {
+    if (turn === 'white') {
+        console.log('white played now it black turn')
+        turn = 'black'
+    }
+    else if (turn === 'black') {
+        console.log('black played, now its whites turn')
+        turn = 'white'
     }
 }
 
 
 
-
-//This function display all the board pieces in the starting position based on the startingBoard array
+//This function display all the board pieces in their positions based on the boardDisplay array
 function deployBoardPieces() {
     allSqaure.forEach(oneSquare => {
         const squareIndex = getSquareIndex(oneSquare.id)
-        const pieceCode = startingBoard[squareIndex]
+        const pieceCode = boardDisplay[squareIndex]
 
         oneSquare.innerHTML = ''
         if (pieceCode) {
@@ -175,10 +206,6 @@ function deployBoardPieces() {
             oneSquare.appendChild(pieceImage)
         }
     })
-}
-
-function swithcPlayerTurn() {
-
 }
 
 
@@ -216,7 +243,6 @@ function goToSignUpPage() {
 allSqaure.forEach((oneSquare) => {
     oneSquare.addEventListener('click', getPieceCode)
 })
-
 
 
 //Authentication

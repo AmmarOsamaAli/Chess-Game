@@ -21,5 +21,3 @@ export function getPawnMoves(sourceIndex, pawnCode){
     }
     return possibleMoves
 }
-
-
