@@ -130,7 +130,7 @@ function getPieceCode() {
     movePiece(pieceCode)
 }
 
-function getBoardCoordinate(coordinateOfpieceIndex) {
+function getBoardCoordinate(codeOfIndex) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
     const rank = Math.floor(pieceIndex / 8) + 1
@@ -144,7 +144,7 @@ function getBoardCoordinate(coordinateOfpieceIndex) {
     else if (file === 6) { file = 'F' }
     else if (file === 7) { file = 'G' }
     else if (file === 8) { file = 'H' }
-    return `${file}${rank}`
+    console.log (`${file}${rank}`)
 }
 
 
@@ -176,6 +176,7 @@ function movePiece(movePieceCode) {
             boardDisplay[selectedSourceIndex] = ''
             selectedSourceIndex = null
             possibleMoves = []
+            getBoardCoordinate(targetIndex)
             deployBoardPieces()
             swithcPlayerTurn()
         } else {
@@ -273,9 +274,6 @@ allSqaure.forEach((oneSquare) => {
     oneSquare.addEventListener('click', getPieceCode)
 })
 
-allSqaure.forEach((oneSquare) => {
-    oneSquare.addEventListener('click', getBoardCoordinate)
-})
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)

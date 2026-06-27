@@ -26,81 +26,26 @@ export function getPawnMoves(sourceIndex, pawnCode) {
 
 export function getRookMoves(sourceIndex, rookCode) {
     const possibleMoves = []
-    const rank = Math.floor(sourceIndex / 8)
-    const column = Math.floor(sourceIndex / 8)
-    if (rookCode === 'wR') {
-        if (rank === 0) {
-            if (column === 0) {
-                possibleMoves.push(sourceIndex + 1)
-                possibleMoves.push(sourceIndex + 2)
-                possibleMoves.push(sourceIndex + 3)
-                possibleMoves.push(sourceIndex + 4)
-                possibleMoves.push(sourceIndex + 5)
-                possibleMoves.push(sourceIndex + 6)
-                possibleMoves.push(sourceIndex + 7)
-                possibleMoves.push(sourceIndex + 8)
-                possibleMoves.push(sourceIndex + 16)
-                possibleMoves.push(sourceIndex + 24)
-                possibleMoves.push(sourceIndex + 32)
-                possibleMoves.push(sourceIndex + 40)
-                possibleMoves.push(sourceIndex + 48)
-                possibleMoves.push(sourceIndex + 56)
-            }
-            else if (column === 1) {
-                possibleMoves.push(sourceIndex - 1)
-                possibleMoves.push(sourceIndex + 1)
-                possibleMoves.push(sourceIndex + 2)
-                possibleMoves.push(sourceIndex + 3)
-                possibleMoves.push(sourceIndex + 4)
-                possibleMoves.push(sourceIndex + 5)
-                possibleMoves.push(sourceIndex + 6)
-                possibleMoves.push(sourceIndex + 8)
-                possibleMoves.push(sourceIndex + 16)
-                possibleMoves.push(sourceIndex + 24)
-                possibleMoves.push(sourceIndex + 32)
-                possibleMoves.push(sourceIndex + 40)
-                possibleMoves.push(sourceIndex + 48)
-                possibleMoves.push(sourceIndex + 56)
-            }
-        }
+    const rank = Math.floor(sourceIndex / 8) 
+    const file = sourceIndex % 8             
+ 
+    // Move left 
+    for (let f = file - 1; f >= 0; f--) {
+        possibleMoves.push(rank * 8 + f)
     }
-    if (rookCode === 'bR') {
-        if (rank === 7) {
-            if (column === 7) {
-                possibleMoves.push(sourceIndex - 1)
-                possibleMoves.push(sourceIndex - 2)
-                possibleMoves.push(sourceIndex - 3)
-                possibleMoves.push(sourceIndex - 4)
-                possibleMoves.push(sourceIndex - 5)
-                possibleMoves.push(sourceIndex - 6)
-                possibleMoves.push(sourceIndex - 7)
-                possibleMoves.push(sourceIndex - 8)
-                possibleMoves.push(sourceIndex - 16)
-                possibleMoves.push(sourceIndex - 24)
-                possibleMoves.push(sourceIndex - 32)
-                possibleMoves.push(sourceIndex - 40)
-                possibleMoves.push(sourceIndex - 48)
-                possibleMoves.push(sourceIndex - 56)
-            }
-            if (column === 6) {
-                possibleMoves.push(sourceIndex + 1)
-                possibleMoves.push(sourceIndex - 1)
-                possibleMoves.push(sourceIndex - 2)
-                possibleMoves.push(sourceIndex - 3)
-                possibleMoves.push(sourceIndex - 4)
-                possibleMoves.push(sourceIndex - 5)
-                possibleMoves.push(sourceIndex - 6)
-                possibleMoves.push(sourceIndex + 8)
-                possibleMoves.push(sourceIndex + 16)
-                possibleMoves.push(sourceIndex + 24)
-                possibleMoves.push(sourceIndex + 32)
-                possibleMoves.push(sourceIndex + 40)
-                possibleMoves.push(sourceIndex + 48)
-                possibleMoves.push(sourceIndex + 56)
-            }
-        }
+    // Move right
+    for (let f = file + 1; f <= 7; f++) {
+        possibleMoves.push(rank * 8 + f)
     }
-
+    // Move down the file 
+    for (let r = rank - 1; r >= 0; r--) {
+        possibleMoves.push(r * 8 + file)
+    }
+    // Move up the file
+    for (let r = rank + 1; r <= 7; r++) {
+        possibleMoves.push(r * 8 + file)
+    }
+ 
     return possibleMoves
 }
 
