@@ -42,14 +42,14 @@ const pieceSVG = {
 
 const boardDisplay = [
 
-    'wR', 'wN', 'wB', 'wQ', '', '', '', '',
+    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    'bR', 'bN', 'bB', 'bQ', '', '', '', '',
+    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
 
@@ -91,7 +91,7 @@ function displayTimer() {
         const formattedSeconds = String(seconds).padStart(2, '0')
         whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-    }, 10)
+    }, 1)
 }
 
 
@@ -104,6 +104,8 @@ function updateTimer() {
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
             whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+            blackTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
+            whiteTimerBtn.style.backgroundColor = 'white'
         }
         else if (blackTimer > 0 && turn === 'black') {
             blackTimer -= 1
@@ -112,6 +114,8 @@ function updateTimer() {
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
+            whiteTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
+            blackTimerBtn.style.backgroundColor = 'white'
         }
     }, 1000)
 }
@@ -177,63 +181,75 @@ function movePiece(movePieceCode) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
-    if (checkPlayerTurn(pieceCode) === false) {
-        return
+
+    if (selectedSourceIndex === null) {
+        if (checkPlayerTurn(pieceCode) === false) return
+        if (!pieceCode) {
+            clearPossibleMoveHighlights()
+            return
+        }
+        if (movePieceCode === 'wP' || movePieceCode === 'bP') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getPawnMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
+        else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getRookMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
+        else if (movePieceCode === 'wN' || movePieceCode === 'bN') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getKnightMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
+        else if (movePieceCode === 'wB' || movePieceCode === 'bB') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getBishopMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
+        else if (movePieceCode === 'wQ' || movePieceCode === 'bQ') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getQueenMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
+        else if (movePieceCode === 'wK' || movePieceCode === 'bK') {
+            selectedSourceIndex = pieceIndex
+            possibleMoves = getKingMoves(pieceIndex, pieceCode)
+            getSquareOfPossibleMoves(pieceIndex, pieceCode)
+            return
+        }
     }
-    else {
-        getSquareOfPossibleMoves(pieceIndex, pieceCode)
-        if (selectedSourceIndex === null) {
-            if (!pieceCode) return
 
-            if (movePieceCode === 'wP' || movePieceCode === 'bP') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getPawnMoves(pieceIndex, pieceCode)
-
-                return
-            }
-            else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getRookMoves(pieceIndex, pieceCode)
-                return
-            }
-            else if (movePieceCode === 'wN' || movePieceCode === 'bN') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getKnightMoves(pieceIndex, pieceCode)
-                return
-            }
-            else if (movePieceCode === 'wB' || movePieceCode === 'bB') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getBishopMoves(pieceIndex, pieceCode)
-                return
-            }
-            else if (movePieceCode === 'wQ' || movePieceCode === 'bQ') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getQueenMoves(pieceIndex, pieceCode)
-                return
-            }
-            else if (movePieceCode === 'wK' || movePieceCode === 'bK') {
-                selectedSourceIndex = pieceIndex
-                possibleMoves = getKingMoves(pieceIndex, pieceCode)
-                return
-            }
-
-        }
-        let targetIndex = pieceIndex
-        if (possibleMoves.includes(targetIndex)) {
-            boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
-            boardDisplay[selectedSourceIndex] = ''
+    let targetIndex = pieceIndex
+    if (possibleMoves.includes(targetIndex)) {
+        const targetPiece = boardDisplay[targetIndex]
+        if (targetPiece && targetPiece[0] === boardDisplay[selectedSourceIndex][0]) {
             selectedSourceIndex = null
             possibleMoves = []
-            getBoardCoordinate(targetIndex)
-            deployBoardPieces()
-            swithcPlayerTurn()
-
-        } else {
-            selectedSourceIndex = null
-            possibleMoves = []
+            clearPossibleMoveHighlights()
+            return
         }
+        boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
+        boardDisplay[selectedSourceIndex] = ''
+        selectedSourceIndex = null
+        possibleMoves = []
+        clearPossibleMoveHighlights()
+        getBoardCoordinate(targetIndex)
+        deployBoardPieces()
+        swithcPlayerTurn()
+    } else {
+        selectedSourceIndex = null
+        possibleMoves = []
+        clearPossibleMoveHighlights()
     }
 }
+
 
 function checkPlayerTurn(pieceCode) {
     let pieceCodeSplit = []
@@ -258,15 +274,10 @@ function swithcPlayerTurn() {
     if (turn === 'white') {
         turn = 'black'
         chessBoard.classList.add('board-flipped')
-        whiteTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
-        blackTimerBtn.style.backgroundColor = 'white'
-
     }
     else if (turn === 'black') {
         turn = 'white'
         chessBoard.classList.remove('board-flipped')
-        blackTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
-        blackTimerBtn.style.backgroundColor = 'white'
     }
 }
 
