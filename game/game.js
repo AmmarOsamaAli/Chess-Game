@@ -43,12 +43,12 @@ const pieceSVG = {
 const boardDisplay = [
 
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
@@ -104,8 +104,6 @@ function updateTimer() {
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
             whiteTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-            blackTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
-            whiteTimerBtn.style.backgroundColor = 'white'
         }
         else if (blackTimer > 0 && turn === 'black') {
             blackTimer -= 1
@@ -114,8 +112,10 @@ function updateTimer() {
             const formattedMinutes = String(minutes).padStart(2, '0')
             const formattedSeconds = String(seconds).padStart(2, '0')
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
-            whiteTimerBtn.style.backgroundColor = 'rgb(95, 95, 95)'
-            blackTimerBtn.style.backgroundColor = 'white'
+        }
+        else if (whiteTimer === 0 || blackTimer === 0) {
+            clearInterval(countDownTimer)
+            checkForWinner()
         }
     }, 1000)
 }
@@ -127,6 +127,7 @@ function getSquareIndex(target) {
     return Number(numberSplit[1] - 1)
 }
 
+// This function get the piece code
 function getPieceCode() {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
@@ -134,6 +135,7 @@ function getPieceCode() {
     movePiece(pieceCode)
 }
 
+// This function gets the Code in chess terms like e4, or b6
 function getBoardCoordinate(codeOfIndex) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
@@ -151,14 +153,17 @@ function getBoardCoordinate(codeOfIndex) {
     console.log(`${file}${rank}`)
 }
 
+// This function clears the possible moves highlights
 function clearPossibleMoveHighlights() {
     document.querySelectorAll('.move-dot').forEach(dot => dot.remove())
 }
 
+
+// This function highlights all the possible square that the piece can move
 function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     clearPossibleMoveHighlights()
     let highlightedMoves = []
-    if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode)
+    if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode)
     else if (pieceCode === 'wN' || pieceCode === 'bN') highlightedMoves = getKnightMoves(pieceIndex, pieceCode)
     else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode)
@@ -176,12 +181,19 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
 }
 
 
-// This function will the move any piece 
+
+
+// This function is the main function for moving all the pieces
 function movePiece(movePieceCode) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
 
+    if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode)) {
+        selectedSourceIndex = null
+        possibleMoves = []
+        clearPossibleMoveHighlights()
+    }
     if (selectedSourceIndex === null) {
         if (checkPlayerTurn(pieceCode) === false) return
         if (!pieceCode) {
@@ -190,7 +202,7 @@ function movePiece(movePieceCode) {
         }
         if (movePieceCode === 'wP' || movePieceCode === 'bP') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getPawnMoves(pieceIndex, pieceCode)
+            possibleMoves = getPawnMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
@@ -243,6 +255,7 @@ function movePiece(movePieceCode) {
         getBoardCoordinate(targetIndex)
         deployBoardPieces()
         swithcPlayerTurn()
+
     } else {
         selectedSourceIndex = null
         possibleMoves = []
@@ -250,6 +263,22 @@ function movePiece(movePieceCode) {
     }
 }
 
+function eatWithPawn(pieceIndex, pieceCode) {
+    let pieceCodeSplit = []
+    pieceCodeSplit = pieceCode.slice(0, 1)
+    const possibleMoves = []
+    const rank = Math.floor(pieceIndex / 8)
+    const file = pieceIndex % 8
+    for (let oneSquare of boardDisplay)
+        if (oneSquare != '')
+            if (pieceIndex + 9 != '' && pieceIndex + 7 != '')
+                if (turn === 'white')
+                    if (pieceCodeSplit != 'w') {
+                        if (rank + 1 <= 7 && file + 1 <= 7) possibleMoves.push(pieceIndex + 8 + 1)
+                        if (rank + 1 <= 7 && file - 1 >= 0) possibleMoves.push(pieceIndex + 8 - 1)
+                    }
+
+}
 
 function checkPlayerTurn(pieceCode) {
     let pieceCodeSplit = []
@@ -281,7 +310,22 @@ function swithcPlayerTurn() {
     }
 }
 
+function checkForWinner() {
 
+}
+
+function checkForTie() {
+
+}
+
+function checkForCheck() {
+
+}
+
+
+function checkForCheckmate() {
+
+}
 
 //This function display all the board pieces in their positions based on the boardDisplay array
 function deployBoardPieces() {
