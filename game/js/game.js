@@ -159,6 +159,7 @@ function getBoardCoordinate(codeOfIndex) {
     chessMove = moveEntry
     moveHistory.appendChild(moveEntry)
     moveHistory.scrollTop = moveHistory.scrollHeight
+    console.log(`${file}${rank}`)
 }
 
 // This function clears the possible moves highlights
@@ -262,6 +263,21 @@ function movePiece(movePieceCode) {
         getBoardCoordinate(targetIndex)
         deployBoardPieces()
         swithcPlayerTurn()
+        checkForWinner()
+        if (winner) {
+            playerTurnIndicator.innerHTML = `${winner} Wins by CheckMate! <span style="color: #EAEDD1">White</span>`
+            return
+        }
+        if (checkForStalemate() && !checkForCheck()) {
+            playerTurnIndicator.innerHTML = `Draw by Stalemate! <span style="color: #EAEDD1">White</span>`
+            return
+        }
+        if (checkForCheck()) {
+            if(turn === 'white')
+                playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+            else if(turn === 'black')
+                playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+        }
 
     } else {
         selectedSourceIndex = null
@@ -374,13 +390,74 @@ function checkForStalemate() {
         }
     })
 
-    if (countMoves === 0) return true
+    if (countMoves === 0 && !checkForCheck()) return true
     else { return false }
 }
 
 // This function checks if there is a check on the king
 function checkForCheck() {
-    
+    let kingIndex = null
+    let queenCaptures = []
+    let pawnCaptures = []
+    let knightCaptures = []
+    let bishopCaptures = []
+    let rookCaptures = []
+    boardDisplay.forEach((oneSquare, index) => {
+        if (turn === 'white' && oneSquare === 'wK') kingIndex = index
+        else if (turn === 'black' && oneSquare === 'bK') kingIndex = index
+    })
+
+    boardDisplay.forEach((oneSquare, index) => {
+        if (oneSquare[0] === 'b' && turn === 'white') {
+            if (oneSquare === 'bP') {
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                pawnCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'bN') {
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                knightCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'bB') {
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                bishopCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'bR') {
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                rookCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'bQ') {
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                queenCaptures.push(...moves.possibleCaptures)
+            }
+        }
+        else if (oneSquare[0] === 'w' && turn === 'black') {
+            if (oneSquare === 'wP') {
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                pawnCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'wN') {
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                knightCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'wB') {
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                bishopCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'wR') {
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                rookCaptures.push(...moves.possibleCaptures)
+            }
+            else if (oneSquare === 'wQ') {
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                queenCaptures.push(...moves.possibleCaptures)
+            }
+
+        }
+    })
+    if (pawnCaptures.includes(kingIndex) || knightCaptures.includes(kingIndex) || bishopCaptures.includes(kingIndex)
+        || rookCaptures.includes(kingIndex) || queenCaptures.includes(kingIndex))
+        return true
+    else return false
 }
 
 // This function checks if there is a checkmate on the king
@@ -393,7 +470,7 @@ function checkForCheckmate() {
                 countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
             }
         }
-        else if(oneSquare[0] === 'b' && turn === 'black') {
+        else if (oneSquare[0] === 'b' && turn === 'black') {
             if (oneSquare === 'bK') {
                 const kingMoves = getKingMoves(index, oneSquare, boardDisplay)
                 countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
