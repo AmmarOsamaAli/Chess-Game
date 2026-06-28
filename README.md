@@ -2,6 +2,11 @@
 
 ## Technologies Used
 
+- HTML5
+- CSS3
+- MD6 Javascript
+- Git 
+- Github
 
 ## Description
 

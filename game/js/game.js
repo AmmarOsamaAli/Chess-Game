@@ -164,11 +164,11 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     clearPossibleMoveHighlights()
     let highlightedMoves = []
     if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode, boardDisplay)
-    else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode)
-    else if (pieceCode === 'wN' || pieceCode === 'bN') highlightedMoves = getKnightMoves(pieceIndex, pieceCode)
-    else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode)
-    else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode)
-    else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode)
+    else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode, boardDisplay)
+    else if (pieceCode === 'wN' || pieceCode === 'bN') highlightedMoves = getKnightMoves(pieceIndex, pieceCode, boardDisplay)
+    else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode, boardDisplay)
+    else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
+    else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
 
     for (let oneSquareMove of highlightedMoves) {
         const oneSquare = document.getElementById(`sqr-${oneSquareMove + 1}`)
@@ -208,31 +208,31 @@ function movePiece(movePieceCode) {
         }
         else if (movePieceCode === 'wR' || movePieceCode === 'bR') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getRookMoves(pieceIndex, pieceCode)
+            possibleMoves = getRookMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
         else if (movePieceCode === 'wN' || movePieceCode === 'bN') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getKnightMoves(pieceIndex, pieceCode)
+            possibleMoves = getKnightMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
         else if (movePieceCode === 'wB' || movePieceCode === 'bB') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getBishopMoves(pieceIndex, pieceCode)
+            possibleMoves = getBishopMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
         else if (movePieceCode === 'wQ' || movePieceCode === 'bQ') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getQueenMoves(pieceIndex, pieceCode)
+            possibleMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
         else if (movePieceCode === 'wK' || movePieceCode === 'bK') {
             selectedSourceIndex = pieceIndex
-            possibleMoves = getKingMoves(pieceIndex, pieceCode)
+            possibleMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
