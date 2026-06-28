@@ -198,7 +198,7 @@ function movePiece(movePieceCode) {
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
 
-    if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode)) {
+    if (selectedSourceIndex !== null && (!pieceCode || checkPlayerTurn(pieceCode))) {
         selectedSourceIndex = null
         possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
