@@ -380,12 +380,29 @@ function checkForStalemate() {
 
 // This function checks if there is a check on the king
 function checkForCheck() {
-
+    
 }
 
 // This function checks if there is a checkmate on the king
 function checkForCheckmate() {
-
+    let countMoves = 0
+    boardDisplay.forEach((oneSquare, index) => {
+        if (oneSquare[0] === 'w' && turn === 'white') {
+            if (oneSquare === 'wK') {
+                const kingMoves = getKingMoves(index, oneSquare, boardDisplay)
+                countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
+            }
+        }
+        else if(oneSquare[0] === 'b' && turn === 'black') {
+            if (oneSquare === 'bK') {
+                const kingMoves = getKingMoves(index, oneSquare, boardDisplay)
+                countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
+            }
+        }
+    })
+    if (countMoves === 0 && checkForStalemate() === false && checkForCheck())
+        return true
+    else return false
 }
 
 //This function display all the board pieces in their positions based on the boardDisplay array
