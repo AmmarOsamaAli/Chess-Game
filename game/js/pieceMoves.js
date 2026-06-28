@@ -184,14 +184,61 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
-    for (let i = 1; i <= 7; i++)
-        if (rank + i <= 7 && file + i <= 7) possibleMoves.push(sourceIndex + (i * 8) + i)
-    for (let i = 1; i <= 7; i++)
-        if (rank + i <= 7 && file - i >= 0) possibleMoves.push(sourceIndex + (i * 8) - i)
-    for (let i = 1; i <= 7; i++)
-        if (rank - i >= 0 && file + i <= 7) possibleMoves.push(sourceIndex - (i * 8) + i)
-    for (let i = 1; i <= 7; i++)
-        if (rank - i >= 0 && file - i >= 0) possibleMoves.push(sourceIndex - (i * 8) - i)
+    for (let i = 1; i <= 7; i++){
+        if (rank + i <= 7 && file + i <= 7) {
+            if (boardDisplay[sourceIndex + (i * 8) + i] != '') {
+                if (boardDisplay[sourceIndex + (i * 8) + i][0] != bishopCode[0]) {
+                    possibleCaptures.push(sourceIndex + (i * 8) + i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex + (i * 8) + i)
+        }
+        else { break }
+    }
+
+    for (let i = 1; i <= 7; i++){
+        if (rank + i <= 7 && file - i >= 0) {
+            if (boardDisplay[sourceIndex + (i * 8) - i] != '') {
+                if (boardDisplay[sourceIndex + (i * 8) - i][0] != bishopCode[0]) {
+                    possibleCaptures.push(sourceIndex + (i * 8) - i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex + (i * 8) - i)
+        }
+        else { break }
+    }
+
+    for (let i = 1; i <= 7; i++){
+        if (rank - i >= 0 && file + i <= 7) {
+            if (boardDisplay[sourceIndex - (i * 8) + i] != '') {
+                if (boardDisplay[sourceIndex - (i * 8) + i][0] != bishopCode[0]) {
+                    possibleCaptures.push(sourceIndex - (i * 8) + i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex - (i * 8) + i)
+        }
+        else { break }
+    }
+
+    for (let i = 1; i <= 7; i++){
+        if (rank - i >= 0 && file - i >= 0) {
+            if (boardDisplay[sourceIndex - (i * 8) - i] != '') {
+                if (boardDisplay[sourceIndex - (i * 8) - i][0] != bishopCode[0]) {
+                    possibleCaptures.push(sourceIndex - (i * 8) - i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex - (i * 8) - i)
+        }
+        else { break }
+    }
 
     return { possibleMoves, possibleCaptures }
 
