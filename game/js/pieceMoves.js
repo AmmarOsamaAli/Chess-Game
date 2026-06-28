@@ -103,15 +103,77 @@ export function getKnightMoves(sourceIndex, knightCode, boardDisplay) {
     const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
-    
-    if (rank + 2 <= 7 && file + 1 <= 7) possibleMoves.push(sourceIndex + 16 + 1)
-    if (rank + 2 <= 7 && file - 1 >= 0) possibleMoves.push(sourceIndex + 16 - 1)
-    if (rank - 2 >= 0 && file + 1 <= 7) possibleMoves.push(sourceIndex - 16 + 1)
-    if (rank - 2 >= 0 && file - 1 >= 0) possibleMoves.push(sourceIndex - 16 - 1)
-    if (rank + 1 <= 7 && file + 2 <= 7) possibleMoves.push(sourceIndex + 8 + 2)
-    if (rank + 1 <= 7 && file - 2 >= 0) possibleMoves.push(sourceIndex + 8 - 2)
-    if (rank - 1 >= 0 && file + 2 <= 7) possibleMoves.push(sourceIndex - 8 + 2)
-    if (rank - 1 >= 0 && file - 2 >= 0) possibleMoves.push(sourceIndex - 8 - 2)
+
+    if (rank + 2 <= 7 && file + 1 <= 7) {
+        if (boardDisplay[sourceIndex + 16 + 1] != '') {
+            if (boardDisplay[sourceIndex + 16 + 1][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex + 16 + 1)
+        }
+        else
+            possibleMoves.push(sourceIndex + 16 + 1)
+    }
+
+    if (rank + 2 <= 7 && file - 1 >= 0) {
+        if (boardDisplay[sourceIndex + 16 - 1] != '') {
+            if (boardDisplay[sourceIndex + 16 - 1][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex + 16 - 1)
+        }
+        else
+            possibleMoves.push(sourceIndex + 16 - 1)
+    }
+
+    if (rank - 2 >= 0 && file + 1 <= 7) {
+        if (boardDisplay[sourceIndex - 16 + 1] != '') {
+            if (boardDisplay[sourceIndex - 16 + 1][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex - 16 + 1)
+        }
+        else
+            possibleMoves.push(sourceIndex - 16 + 1)
+    }
+
+    if (rank - 2 >= 0 && file - 1 >= 0) {
+        if (boardDisplay[sourceIndex - 16 - 1] != '') {
+            if (boardDisplay[sourceIndex - 16 - 1][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex - 16 - 1)
+        }
+        else possibleMoves.push(sourceIndex - 16 - 1)
+    }
+
+    if (rank + 1 <= 7 && file + 2 <= 7) {
+        if (boardDisplay[sourceIndex + 8 + 2] != '') {
+            if (boardDisplay[sourceIndex + 8 + 2][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex + 8 + 2)
+        }
+        else
+            possibleMoves.push(sourceIndex + 8 + 2)
+    }
+
+    if (rank + 1 <= 7 && file - 2 >= 0) {
+        if (boardDisplay[sourceIndex + 8 - 2] != '') {
+            if (boardDisplay[sourceIndex + 8 - 2][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex + 8 - 2)
+        }
+        else
+            possibleMoves.push(sourceIndex + 8 - 2)
+    }
+
+    if (rank - 1 >= 0 && file + 2 <= 7) {
+        if (boardDisplay[sourceIndex - 8 + 2] != '') {
+            if (boardDisplay[sourceIndex - 8 + 2][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex - 8 + 2)
+        }
+        else
+            possibleMoves.push(sourceIndex - 8 + 2)
+    }
+
+    if (rank - 1 >= 0 && file - 2 >= 0) {
+        if (boardDisplay[sourceIndex - 8 - 2] != '') {
+            if (boardDisplay[sourceIndex - 8 - 2][0] != knightCode[0])
+                possibleCaptures.push(sourceIndex - 8 - 2)
+        }
+        else
+            possibleMoves.push(sourceIndex - 8 - 2)
+    }
 
     return { possibleMoves, possibleCaptures }
 }

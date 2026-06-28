@@ -250,13 +250,6 @@ function movePiece(movePieceCode) {
     let targetIndex = pieceIndex
     const allValidMoves = [...possibleMoves.possibleMoves, ...possibleMoves.possibleCaptures]
     if (allValidMoves.includes(targetIndex)) {
-        const targetPiece = boardDisplay[targetIndex]
-        if (targetPiece && targetPiece[0] === boardDisplay[selectedSourceIndex][0]) {
-            selectedSourceIndex = null
-            possibleMoves = { possibleMoves: [], possibleCaptures: [] }
-            clearPossibleMoveHighlights()
-            return
-        }
         boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
         boardDisplay[selectedSourceIndex] = ''
         selectedSourceIndex = null
