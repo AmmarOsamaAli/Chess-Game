@@ -55,7 +55,7 @@ body {
     width: 100px;
     height: 35px;
     color: white;
-    background-image: linear-gradient(#9FD05D, #36582d);
+    background-image: linear-gradient(#9FD05D, rgb(54, 88, 45));
     cursor: pointer;
 }
 
@@ -104,11 +104,11 @@ body {
 }
 
 .white-sqr {
-    background-color: #EBECD0;
+    background-color: #769556;
 }
 
 .dark-sqr {
-    background-color: #739552;
+    background-color: #EAEDD1;
 }
 
 .timer {
@@ -190,7 +190,7 @@ body {
     padding-top: 20px;
     position: absolute;
     color: white;
-    background: rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, #000000, #585858);
     left: calc(50% + 150px + 200px - 10px);
     gap: 10px; 
 }
@@ -214,14 +214,14 @@ body {
 }
 
 .white-move {
-    color: white;
-    font-size: 16px;
+    color: #EAEDD1;
+    font-size: 20px;
     font-weight: 600;
 }
 
 .black-move {
-    color: rgb(180, 180, 180);
-    font-size: 16px;
+    color: rgb(159, 208, 93);
+    font-size: 20px;
     font-weight: 600;
 }
 

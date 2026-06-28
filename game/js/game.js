@@ -55,6 +55,8 @@ const boardDisplay = [
 
 
 
+
+
 /*---------------------------Variables--------------------------------*/
 
 let winner = false
@@ -157,7 +159,7 @@ function getBoardCoordinate(codeOfIndex) {
 
     moveCount ++
     const moveEntry = document.createElement('p')
-    moveEntry.textContent = `${file}${rank}`
+    moveEntry.textContent = `${moveCount}. ${file}${rank}`
     chessMove = moveEntry
     moveHistory.appendChild(moveEntry)
     moveHistory.scrollTop = moveHistory.scrollHeight 
@@ -169,7 +171,6 @@ function clearPossibleMoveHighlights() {
     document.querySelectorAll('.capture-circle').forEach(dot => dot.remove())
 
 }
-
 
 // This function highlights all the possible square that the piece can move
 function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
@@ -199,16 +200,13 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     }
 }
 
-
-
-
 // This function is the main function for moving all the pieces
 function movePiece(movePieceCode) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
 
-    if (selectedSourceIndex !== null && (!pieceCode || checkPlayerTurn(pieceCode))) {
+    if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode))     {
         selectedSourceIndex = null
         possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
@@ -299,17 +297,15 @@ function swithcPlayerTurn() {
     if (turn === 'white') {
         turn = 'black'
         chessBoard.classList.add('board-flipped')
-        playerTurnIndicator.textContent = 'Player Turn: Black'
-        chessMove.classList.add('black-move')
+        playerTurnIndicator.innerHTML = 'Player Turn: <span style="color: #9FD05D">Black</span>'
+        chessMove.classList.add('white-move')
   
-    
-
     }
     else if (turn === 'black') {
         turn = 'white'
         chessBoard.classList.remove('board-flipped')
-        playerTurnIndicator.textContent = 'Player Turn: White'
-        chessMove.classList.add('white-move')
+        playerTurnIndicator.innerHTML = 'Player Turn: <span style="color: #EAEDD1">White</span>'
+        chessMove.classList.add('black-move')
     }
 }
 
