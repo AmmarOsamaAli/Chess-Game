@@ -2,47 +2,43 @@
 
 export function getPawnMoves(sourceIndex, pawnCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
     if (pawnCode === 'wP') {
-        if (rank === 1) {
-            possibleMoves.push(sourceIndex + 8)
-            possibleMoves.push(sourceIndex + 16)
-        } else {
-            possibleMoves.push(sourceIndex + 8)
+        if (!boardDisplay[sourceIndex + 8]) {
+            if (rank === 1) {
+                possibleMoves.push(sourceIndex + 8)
+                if (!boardDisplay[sourceIndex + 16])
+                    possibleMoves.push(sourceIndex + 16)
+            } else {
+                possibleMoves.push(sourceIndex + 8)
+            }
         }
-
-        if (rank + 1 < 7) {
-            if (boardDisplay[sourceIndex + 8])
-                possibleMoves.pop(sourceIndex + 8)
-        }
-
         if (rank + 1 <= 7 && file + 1 <= 7 && boardDisplay[sourceIndex + 9] && boardDisplay[sourceIndex + 9][0] === 'b')
-            possibleMoves.push(sourceIndex + 9)
+            possibleCaptures.push(sourceIndex + 9)
         if (rank + 1 <= 7 && file - 1 >= 0 && boardDisplay[sourceIndex + 7] && boardDisplay[sourceIndex + 7][0] === 'b')
-            possibleMoves.push(sourceIndex + 7)
+            possibleCaptures.push(sourceIndex + 7)
     }
 
     if (pawnCode === 'bP') {
-        if (rank === 6) {
-            possibleMoves.push(sourceIndex - 8)
-            possibleMoves.push(sourceIndex - 16)
-        } else {
-            possibleMoves.push(sourceIndex - 8)
-        }
-
-        if (rank + 1 > 0) {
-            if (boardDisplay[sourceIndex - 8])
-                possibleMoves.pop(sourceIndex - 8)
+        if (!boardDisplay[sourceIndex - 8]) {
+            if (rank === 6) {
+                possibleMoves.push(sourceIndex - 8)
+                if (!boardDisplay[sourceIndex - 16])
+                    possibleMoves.push(sourceIndex - 16)
+            } else {
+                possibleMoves.push(sourceIndex - 8)
+            }
         }
 
         if (rank - 1 >= 0 && file + 1 <= 7 && boardDisplay[sourceIndex - 7] && boardDisplay[sourceIndex - 7][0] === 'w')
-            possibleMoves.push(sourceIndex - 7)
+            possibleCaptures.push(sourceIndex - 7)
         if (rank - 1 >= 0 && file - 1 >= 0 && boardDisplay[sourceIndex - 9] && boardDisplay[sourceIndex - 9][0] === 'w')
-            possibleMoves.push(sourceIndex - 9)
+            possibleCaptures.push(sourceIndex - 9)
     }
-    return possibleMoves
+    return { possibleMoves, possibleCaptures }
 }
 
 
@@ -53,21 +49,30 @@ export function getRookMoves(sourceIndex, rookCode, boardDisplay) {
 
     // Move left 
     for (let f = file - 1; f >= 0; f--) {
-        possibleMoves.push(rank * 8 + f)
+        if (boardDisplay[sourceIndex] != '')
+            if (boardDisplay[index][0] === 'w')
+                break
+            else if (boardDisplay[index][0] === 'b')
+                console.log()
+            else {
+                possibleMoves.push(rank * 8 + f)
+            }
     }
     // Move right
     for (let f = file + 1; f <= 7; f++) {
         possibleMoves.push(rank * 8 + f)
+
     }
     // Move down 
     for (let r = rank - 1; r >= 0; r--) {
         possibleMoves.push(r * 8 + file)
+
     }
     // Move up 
     for (let r = rank + 1; r <= 7; r++) {
         possibleMoves.push(r * 8 + file)
-    }
 
+    }
     return possibleMoves
 }
 
@@ -94,12 +99,14 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= 7; i++)
         if (rank + i <= 7 && file + i <= 7) possibleMoves.push(sourceIndex + (i * 8) + i)
+    for (let i = 1; i <= 7; i++)
         if (rank + i <= 7 && file - i >= 0) possibleMoves.push(sourceIndex + (i * 8) - i)
+    for (let i = 1; i <= 7; i++)
         if (rank - i >= 0 && file + i <= 7) possibleMoves.push(sourceIndex - (i * 8) + i)
+    for (let i = 1; i <= 7; i++)
         if (rank - i >= 0 && file - i >= 0) possibleMoves.push(sourceIndex - (i * 8) - i)
-    }
 
     return possibleMoves
 

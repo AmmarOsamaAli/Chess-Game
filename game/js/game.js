@@ -43,12 +43,12 @@ const pieceSVG = {
 const boardDisplay = [
 
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+    'wP', 'wP', 'wP', '', '', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
+    '', '', '', 'wP', 'wP', '', '', '',
+    '', '', '', 'bP', 'bP', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+    'bP', 'bP', 'bP', '', '', 'bP', 'bP', 'bP',
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
@@ -65,7 +65,7 @@ let blackTimer = 0
 let turn = 'white'
 let timer = 0
 let selectedSourceIndex = null
-let possibleMoves = []
+let possibleMoves = { possibleMoves: [], possibleCaptures: [] }
 
 
 
@@ -156,13 +156,15 @@ function getBoardCoordinate(codeOfIndex) {
 // This function clears the possible moves highlights
 function clearPossibleMoveHighlights() {
     document.querySelectorAll('.move-dot').forEach(dot => dot.remove())
+    document.querySelectorAll('.capture-circle').forEach(dot => dot.remove())
+    
 }
 
 
 // This function highlights all the possible square that the piece can move
 function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     clearPossibleMoveHighlights()
-    let highlightedMoves = []
+    let highlightedMoves = { possibleMoves: [], possibleCaptures: [] }
     if (pieceCode === 'wP' || pieceCode === 'bP') highlightedMoves = getPawnMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wR' || pieceCode === 'bR') highlightedMoves = getRookMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wN' || pieceCode === 'bN') highlightedMoves = getKnightMoves(pieceIndex, pieceCode, boardDisplay)
@@ -170,12 +172,19 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
 
-    for (let oneSquareMove of highlightedMoves) {
+    for (let oneSquareMove of highlightedMoves.possibleMoves) {
         const oneSquare = document.getElementById(`sqr-${oneSquareMove + 1}`)
-        if (!oneSquare) return
-
+        if (!oneSquare) continue
         const dot = document.createElement('div')
         dot.classList.add('move-dot')
+        oneSquare.appendChild(dot)
+    }
+
+    for (let oneSquareCapture of highlightedMoves.possibleCaptures){
+        const oneSquare = document.getElementById(`sqr-${oneSquareCapture + 1}`)
+        if (!oneSquare) continue
+        const dot = document.createElement('div')
+        dot.classList.add('capture-circle')
         oneSquare.appendChild(dot)
     }
 }
@@ -191,7 +200,7 @@ function movePiece(movePieceCode) {
 
     if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode)) {
         selectedSourceIndex = null
-        possibleMoves = []
+        possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
     }
     if (selectedSourceIndex === null) {
@@ -239,18 +248,19 @@ function movePiece(movePieceCode) {
     }
 
     let targetIndex = pieceIndex
-    if (possibleMoves.includes(targetIndex)) {
+    const allValidMoves = [...possibleMoves.possibleMoves, ...possibleMoves.possibleCaptures]
+    if (allValidMoves.includes(targetIndex)) {
         const targetPiece = boardDisplay[targetIndex]
         if (targetPiece && targetPiece[0] === boardDisplay[selectedSourceIndex][0]) {
             selectedSourceIndex = null
-            possibleMoves = []
+            possibleMoves = { possibleMoves: [], possibleCaptures: [] }
             clearPossibleMoveHighlights()
             return
         }
         boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
         boardDisplay[selectedSourceIndex] = ''
         selectedSourceIndex = null
-        possibleMoves = []
+        possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
         getBoardCoordinate(targetIndex)
         deployBoardPieces()
@@ -258,26 +268,9 @@ function movePiece(movePieceCode) {
 
     } else {
         selectedSourceIndex = null
-        possibleMoves = []
+        possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
     }
-}
-
-function eatWithPawn(pieceIndex, pieceCode) {
-    let pieceCodeSplit = []
-    pieceCodeSplit = pieceCode.slice(0, 1)
-    const possibleMoves = []
-    const rank = Math.floor(pieceIndex / 8)
-    const file = pieceIndex % 8
-    for (let oneSquare of boardDisplay)
-        if (oneSquare != '')
-            if (pieceIndex + 9 != '' && pieceIndex + 7 != '')
-                if (turn === 'white')
-                    if (pieceCodeSplit != 'w') {
-                        if (rank + 1 <= 7 && file + 1 <= 7) possibleMoves.push(pieceIndex + 8 + 1)
-                        if (rank + 1 <= 7 && file - 1 >= 0) possibleMoves.push(pieceIndex + 8 - 1)
-                    }
-
 }
 
 function checkPlayerTurn(pieceCode) {
