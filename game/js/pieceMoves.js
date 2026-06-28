@@ -184,6 +184,7 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
+    // Diagonal Up Right
     for (let i = 1; i <= 7; i++){
         if (rank + i <= 7 && file + i <= 7) {
             if (boardDisplay[sourceIndex + (i * 8) + i] != '') {
@@ -198,6 +199,7 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
         else { break }
     }
 
+    // Diagonal Up Left
     for (let i = 1; i <= 7; i++){
         if (rank + i <= 7 && file - i >= 0) {
             if (boardDisplay[sourceIndex + (i * 8) - i] != '') {
@@ -212,6 +214,7 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
         else { break }
     }
 
+    // Diagonal Down Right
     for (let i = 1; i <= 7; i++){
         if (rank - i >= 0 && file + i <= 7) {
             if (boardDisplay[sourceIndex - (i * 8) + i] != '') {
@@ -226,6 +229,7 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
         else { break }
     }
 
+    // Diagonal Down Left
     for (let i = 1; i <= 7; i++){
         if (rank - i >= 0 && file - i >= 0) {
             if (boardDisplay[sourceIndex - (i * 8) - i] != '') {
@@ -250,25 +254,117 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
-    // Move Left
-    for (let f = file - 1; f >= 0; f--) possibleMoves.push(rank * 8 + f)
+    // Move left 
+    for (let f = file - 1; f >= 0; f--) {
+        if (boardDisplay[rank * 8 + f] != '')
+            if ((boardDisplay[rank * 8 + f][0] === queenCode[0]))
+                break
+            else {
+                possibleCaptures.push(rank * 8 + f)
+                break
+            }
+        else (possibleMoves.push(rank * 8 + f))
+    }
     // Move right
-    for (let f = file + 1; f <= 7; f++) possibleMoves.push(rank * 8 + f)
-    // Move down 
-    for (let r = rank - 1; r >= 0; r--) possibleMoves.push(r * 8 + file)
-    // Move up 
-    for (let r = rank + 1; r <= 7; r++) possibleMoves.push(r * 8 + file)
+    for (let f = file + 1; f <= 7; f++) {
+        if (boardDisplay[rank * 8 + f] != '')
+            if (boardDisplay[rank * 8 + f][0] === queenCode[0])
+                break
+            else {
+                possibleCaptures.push(rank * 8 + f)
+                break
+            }
+        else { (possibleMoves.push(rank * 8 + f)) }
+    }
 
-    for (let i = 1; i <= 7; i++) {
-        if (rank + i <= 7 && file + i <= 7) possibleMoves.push(sourceIndex + (i * 8) + i)
-        if (rank + i <= 7 && file - i >= 0) possibleMoves.push(sourceIndex + (i * 8) - i)
-        if (rank - i >= 0 && file + i <= 7) possibleMoves.push(sourceIndex - (i * 8) + i)
-        if (rank - i >= 0 && file - i >= 0) possibleMoves.push(sourceIndex - (i * 8) - i)
+    // Move down 
+    for (let r = rank - 1; r >= 0; r--) {
+        if (boardDisplay[r * 8 + file] != '')
+            if (boardDisplay[r * 8 + file][0] === queenCode[0])
+                break
+            else {
+                possibleCaptures.push(r * 8 + file)
+                break
+            }
+        else { (possibleMoves.push(r * 8 + file)) }
+    }
+    // Move up 
+    for (let r = rank + 1; r <= 7; r++) {
+        if (boardDisplay[r * 8 + file] != '')
+            if (boardDisplay[r * 8 + file][0] === queenCode[0])
+                break
+            else {
+                possibleCaptures.push(r * 8 + file)
+                break
+            }
+        else { (possibleMoves.push(r * 8 + file)) }
+    }
+
+    // Diagonal Up Right
+    for (let i = 1; i <= 7; i++){
+        if (rank + i <= 7 && file + i <= 7) {
+            if (boardDisplay[sourceIndex + (i * 8) + i] != '') {
+                if (boardDisplay[sourceIndex + (i * 8) + i][0] != queenCode[0]) {
+                    possibleCaptures.push(sourceIndex + (i * 8) + i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex + (i * 8) + i)
+        }
+        else { break }
+    }
+
+    // Diagonal Up Left
+    for (let i = 1; i <= 7; i++){
+        if (rank + i <= 7 && file - i >= 0) {
+            if (boardDisplay[sourceIndex + (i * 8) - i] != '') {
+                if (boardDisplay[sourceIndex + (i * 8) - i][0] != queenCode[0]) {
+                    possibleCaptures.push(sourceIndex + (i * 8) - i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex + (i * 8) - i)
+        }
+        else { break }
+    }
+
+    // Diagonal Down Right
+    for (let i = 1; i <= 7; i++){
+        if (rank - i >= 0 && file + i <= 7) {
+            if (boardDisplay[sourceIndex - (i * 8) + i] != '') {
+                if (boardDisplay[sourceIndex - (i * 8) + i][0] != queenCode[0]) {
+                    possibleCaptures.push(sourceIndex - (i * 8) + i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex - (i * 8) + i)
+        }
+        else { break }
+    }
+
+    // Diagonal Down Left
+    for (let i = 1; i <= 7; i++){
+        if (rank - i >= 0 && file - i >= 0) {
+            if (boardDisplay[sourceIndex - (i * 8) - i] != '') {
+                if (boardDisplay[sourceIndex - (i * 8) - i][0] != queenCode[0]) {
+                    possibleCaptures.push(sourceIndex - (i * 8) - i)
+                    break
+                }
+                else{break}
+            }
+            else possibleMoves.push(sourceIndex - (i * 8) - i)
+        }
+        else { break }
     }
 
     return { possibleMoves, possibleCaptures }
-
 }
+
+    
+
 
 export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
     const possibleMoves = []
