@@ -16,7 +16,8 @@ const chessBoard = document.querySelector('.board')
 const allSqaure = document.querySelectorAll('.sqr')
 const whiteTimerBtn = document.querySelector('#timer-white')
 const blackTimerBtn = document.querySelector('#timer-black')
-
+const playerTurnIndicator = document.querySelector('#player-turn-indicator')
+const moveHistory = document.querySelector('#move-history')
 
 /*---------------------------Constant--------------------------------*/
 
@@ -43,14 +44,15 @@ const pieceSVG = {
 const boardDisplay = [
 
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', '', '', 'wP', 'wP', 'wP',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
-    '', '', '', 'wP', 'wP', '', '', '',
-    '', '', '', 'bP', 'bP', '', '', '',
     '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', '', '', 'bP', 'bP', 'bP',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
+
 
 
 /*---------------------------Variables--------------------------------*/
@@ -66,6 +68,8 @@ let turn = 'white'
 let timer = 0
 let selectedSourceIndex = null
 let possibleMoves = { possibleMoves: [], possibleCaptures: [] }
+let chessMove = null
+let moveCount = 0
 
 
 
@@ -150,14 +154,20 @@ function getBoardCoordinate(codeOfIndex) {
     else if (file === 6) { file = 'F' }
     else if (file === 7) { file = 'G' }
     else if (file === 8) { file = 'H' }
-    console.log(`${file}${rank}`)
+
+    moveCount ++
+    const moveEntry = document.createElement('p')
+    moveEntry.textContent = `${file}${rank}`
+    chessMove = moveEntry
+    moveHistory.appendChild(moveEntry)
+    moveHistory.scrollTop = moveHistory.scrollHeight 
 }
 
 // This function clears the possible moves highlights
 function clearPossibleMoveHighlights() {
     document.querySelectorAll('.move-dot').forEach(dot => dot.remove())
     document.querySelectorAll('.capture-circle').forEach(dot => dot.remove())
-    
+
 }
 
 
@@ -180,7 +190,7 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
         oneSquare.appendChild(dot)
     }
 
-    for (let oneSquareCapture of highlightedMoves.possibleCaptures){
+    for (let oneSquareCapture of highlightedMoves.possibleCaptures) {
         const oneSquare = document.getElementById(`sqr-${oneSquareCapture + 1}`)
         if (!oneSquare) continue
         const dot = document.createElement('div')
@@ -289,10 +299,17 @@ function swithcPlayerTurn() {
     if (turn === 'white') {
         turn = 'black'
         chessBoard.classList.add('board-flipped')
+        playerTurnIndicator.textContent = 'Player Turn: Black'
+        chessMove.classList.add('black-move')
+  
+    
+
     }
     else if (turn === 'black') {
         turn = 'white'
         chessBoard.classList.remove('board-flipped')
+        playerTurnIndicator.textContent = 'Player Turn: White'
+        chessMove.classList.add('white-move')
     }
 }
 
@@ -334,6 +351,7 @@ function render() {
     getTimeFromURL()
     displayTimer()
     updateTimer()
+    playerTurnIndicator.textContent = 'Player Turn: White'
 }
 
 

@@ -65,7 +65,7 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-    padding-top: 50px; 
+    padding-top: 50px;
 }
 
 #main-heading {
@@ -114,12 +114,13 @@ body {
 .timer {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    gap: 200px;
+    justify-content: center;
     align-items: center;
+    gap: 100px;
     height: 640px;
     width: 250px;
     position: absolute;
+    background: rgba(0, 0, 0, 0.2);
     left: calc(50% - 321px - 250px - 20px);
 }
 
@@ -143,23 +144,6 @@ body {
 
 }
 
-#show-game-details{
-    height: 642px;
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 200px;
-    font-size: 30px;
-    font-weight: 800;
-    padding-top: 20px;
-    position: absolute;
-    color: white;
-    background-image: linear-gradient(to left, #111111, #757373);
-    left: calc(50% + 150px + 200px - 10px);
-}
-
 .board-flipped {
     transform: rotate(180deg);
 }
@@ -167,7 +151,6 @@ body {
 .board-flipped img {
     transform: translate(-50%, 5%) rotate(180deg);
 }
-
 
 
 .move-dot {
@@ -182,7 +165,7 @@ body {
     pointer-events: none;
 }
 
-.capture-circle{
+.capture-circle {
     width: 80%;
     height: 80%;
     border: 8px solid rgba(0, 0, 0, 0.25);
@@ -194,3 +177,52 @@ body {
     transform: translate(-50%, -50%);
     pointer-events: none;
 }
+
+#show-game-details {
+    height: 642px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 30px;
+    font-weight: 800;
+    padding-top: 20px;
+    position: absolute;
+    color: white;
+    background: rgba(0, 0, 0, 0.2);
+    left: calc(50% + 150px + 200px - 10px);
+    gap: 10px; 
+}
+
+#move-history {
+    width: 100%;
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#player-turn-indicator {
+    font-size: 25px;
+    padding: 30px;
+    width: 100%;
+    text-align: center;
+    border-top: 2px solid rgba(255,255,255,0.2);
+}
+
+.white-move {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.black-move {
+    color: rgb(180, 180, 180);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
