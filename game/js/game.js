@@ -60,10 +60,8 @@ const boardDisplay = [
 /*---------------------------Variables--------------------------------*/
 
 let winner = false
-let loser = false
 let draw = false
 let check = false
-let checkMate = false
 let whiteTimer = 0
 let blackTimer = 0
 let turn = 'white'
@@ -143,10 +141,8 @@ function getPieceCode() {
 
 // This function gets the Code in chess terms like e4, or b6
 function getBoardCoordinate(codeOfIndex) {
-    const pieceSquare = event.target.closest('.sqr')
-    let pieceIndex = getSquareIndex(pieceSquare.id)
-    const rank = Math.floor(pieceIndex / 8) + 1
-    let file = (pieceIndex % 8) + 1
+    const rank = Math.floor(codeOfIndex / 8) + 1
+    let file = (codeOfIndex % 8) + 1
 
     if (file === 1) { file = 'A' }
     else if (file === 2) { file = 'B' }
@@ -157,12 +153,12 @@ function getBoardCoordinate(codeOfIndex) {
     else if (file === 7) { file = 'G' }
     else if (file === 8) { file = 'H' }
 
-    moveCount ++
+    moveCount++
     const moveEntry = document.createElement('p')
     moveEntry.textContent = `${moveCount}. ${file}${rank}`
     chessMove = moveEntry
     moveHistory.appendChild(moveEntry)
-    moveHistory.scrollTop = moveHistory.scrollHeight 
+    moveHistory.scrollTop = moveHistory.scrollHeight
 }
 
 // This function clears the possible moves highlights
@@ -206,7 +202,7 @@ function movePiece(movePieceCode) {
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
 
-    if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode))     {
+    if (selectedSourceIndex !== null && pieceCode && checkPlayerTurn(pieceCode)) {
         selectedSourceIndex = null
         possibleMoves = { possibleMoves: [], possibleCaptures: [] }
         clearPossibleMoveHighlights()
@@ -274,6 +270,7 @@ function movePiece(movePieceCode) {
     }
 }
 
+// This function checks who turn is it
 function checkPlayerTurn(pieceCode) {
     let pieceCodeSplit = []
     pieceCodeSplit = pieceCode.slice(0, 1)
@@ -292,14 +289,14 @@ function checkPlayerTurn(pieceCode) {
 
 }
 
-
+// This function switches the player turn
 function swithcPlayerTurn() {
     if (turn === 'white') {
         turn = 'black'
         chessBoard.classList.add('board-flipped')
         playerTurnIndicator.innerHTML = 'Player Turn: <span style="color: #9FD05D">Black</span>'
         chessMove.classList.add('white-move')
-  
+
     }
     else if (turn === 'black') {
         turn = 'white'
@@ -309,19 +306,84 @@ function swithcPlayerTurn() {
     }
 }
 
+
+// This function checks who is the winner
 function checkForWinner() {
-
+    if (checkForCheckmate())
+        if (turn === 'white')
+            winner = 'black'
+        else
+            winner = 'white'
 }
 
-function checkForTie() {
+// This functions checks if there is a draw
+function checkForStalemate() {
+    let countMoves = 0
+    boardDisplay.forEach((oneSquare, index) => {
+        if (oneSquare[0] === 'w' && turn === 'white') {
+            if (oneSquare === 'wP') {
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wN') {
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wB') {
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wR') {
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wQ') {
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wK') {
+                const moves = getKingMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+        }
+        else if (oneSquare[0] === 'b' && turn === 'black') {
+            if (oneSquare === 'bP') {
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bN') {
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bB') {
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bR') {
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bQ') {
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bK') {
+                const moves = getKingMoves(index, oneSquare, boardDisplay)
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+        }
+    })
 
+    if (countMoves === 0) return true
+    else { return false }
 }
 
+// This function checks if there is a check on the king
 function checkForCheck() {
 
 }
 
-
+// This function checks if there is a checkmate on the king
 function checkForCheckmate() {
 
 }
@@ -347,7 +409,8 @@ function render() {
     getTimeFromURL()
     displayTimer()
     updateTimer()
-    playerTurnIndicator.textContent = 'Player Turn: White'
+    playerTurnIndicator.innerHTML = 'Player Turn: <span style="color: #EAEDD1">White</span>'
+
 }
 
 
