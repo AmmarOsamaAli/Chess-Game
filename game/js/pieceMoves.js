@@ -44,44 +44,66 @@ export function getPawnMoves(sourceIndex, pawnCode, boardDisplay) {
 
 export function getRookMoves(sourceIndex, rookCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
     // Move left 
     for (let f = file - 1; f >= 0; f--) {
-        if (boardDisplay[sourceIndex] != '')
-            if (boardDisplay[index][0] === 'w')
+        if (boardDisplay[rank * 8 + f] != '')
+            if ((boardDisplay[rank * 8 + f][0] === rookCode[0]))
                 break
-            else if (boardDisplay[index][0] === 'b')
-                console.log()
             else {
-                possibleMoves.push(rank * 8 + f)
+                possibleCaptures.push(rank * 8 + f)
+                break
             }
+        else (possibleMoves.push(rank * 8 + f))
     }
     // Move right
     for (let f = file + 1; f <= 7; f++) {
-        possibleMoves.push(rank * 8 + f)
-
+        if (boardDisplay[rank * 8 + f] != '')
+            if (boardDisplay[rank * 8 + f][0] === rookCode[0])
+                break
+            else {
+                possibleCaptures.push(rank * 8 + f)
+                break
+            }
+        else { (possibleMoves.push(rank * 8 + f)) }
     }
+
     // Move down 
     for (let r = rank - 1; r >= 0; r--) {
-        possibleMoves.push(r * 8 + file)
-
+        if (boardDisplay[r * 8 + file] != '')
+            if (boardDisplay[r * 8 + file][0] === rookCode[0])
+                break
+            else {
+                possibleCaptures.push(r * 8 + file)
+                break
+            }
+        else { (possibleMoves.push(r * 8 + file)) }
     }
     // Move up 
     for (let r = rank + 1; r <= 7; r++) {
-        possibleMoves.push(r * 8 + file)
-
+        if (boardDisplay[r * 8 + file] != '')
+            if (boardDisplay[r * 8 + file][0] === rookCode[0])
+                break
+            else {
+                possibleCaptures.push(r * 8 + file)
+                break
+            }
+        else { (possibleMoves.push(r * 8 + file)) }
     }
-    return possibleMoves
+
+    return { possibleMoves, possibleCaptures }
 }
 
 
 export function getKnightMoves(sourceIndex, knightCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
-
+    
     if (rank + 2 <= 7 && file + 1 <= 7) possibleMoves.push(sourceIndex + 16 + 1)
     if (rank + 2 <= 7 && file - 1 >= 0) possibleMoves.push(sourceIndex + 16 - 1)
     if (rank - 2 >= 0 && file + 1 <= 7) possibleMoves.push(sourceIndex - 16 + 1)
@@ -91,11 +113,12 @@ export function getKnightMoves(sourceIndex, knightCode, boardDisplay) {
     if (rank - 1 >= 0 && file + 2 <= 7) possibleMoves.push(sourceIndex - 8 + 2)
     if (rank - 1 >= 0 && file - 2 >= 0) possibleMoves.push(sourceIndex - 8 - 2)
 
-    return possibleMoves
+    return { possibleMoves, possibleCaptures }
 }
 
 export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
@@ -108,12 +131,13 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     for (let i = 1; i <= 7; i++)
         if (rank - i >= 0 && file - i >= 0) possibleMoves.push(sourceIndex - (i * 8) - i)
 
-    return possibleMoves
+    return { possibleMoves, possibleCaptures }
 
 }
 
 export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
@@ -133,12 +157,13 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
         if (rank - i >= 0 && file - i >= 0) possibleMoves.push(sourceIndex - (i * 8) - i)
     }
 
-    return possibleMoves
+    return { possibleMoves, possibleCaptures }
 
 }
 
 export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
     const possibleMoves = []
+    const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
     const file = sourceIndex % 8
 
@@ -151,5 +176,5 @@ export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
     if (rank - 1 >= 0 && file + 1 <= 7) possibleMoves.push(sourceIndex - 8 + 1)
     if (rank - 1 >= 0 && file - 1 >= 0) possibleMoves.push(sourceIndex - 8 - 1)
 
-    return possibleMoves
+    return { possibleMoves, possibleCaptures }
 }
