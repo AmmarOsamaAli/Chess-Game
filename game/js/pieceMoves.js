@@ -16,10 +16,12 @@ export function getPawnMoves(sourceIndex, pawnCode, boardDisplay) {
                 possibleMoves.push(sourceIndex + 8)
             }
         }
+
         if (rank + 1 <= 7 && file + 1 <= 7 && boardDisplay[sourceIndex + 9] && boardDisplay[sourceIndex + 9][0] === 'b')
             possibleCaptures.push(sourceIndex + 9)
         if (rank + 1 <= 7 && file - 1 >= 0 && boardDisplay[sourceIndex + 7] && boardDisplay[sourceIndex + 7][0] === 'b')
             possibleCaptures.push(sourceIndex + 7)
+
     }
 
     if (pawnCode === 'bP') {
@@ -37,6 +39,7 @@ export function getPawnMoves(sourceIndex, pawnCode, boardDisplay) {
             possibleCaptures.push(sourceIndex - 7)
         if (rank - 1 >= 0 && file - 1 >= 0 && boardDisplay[sourceIndex - 9] && boardDisplay[sourceIndex - 9][0] === 'w')
             possibleCaptures.push(sourceIndex - 9)
+
     }
     return { possibleMoves, possibleCaptures }
 }
@@ -185,14 +188,14 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     const file = sourceIndex % 8
 
     // Diagonal Up Right
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank + i <= 7 && file + i <= 7) {
             if (boardDisplay[sourceIndex + (i * 8) + i] != '') {
                 if (boardDisplay[sourceIndex + (i * 8) + i][0] != bishopCode[0]) {
                     possibleCaptures.push(sourceIndex + (i * 8) + i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex + (i * 8) + i)
         }
@@ -200,14 +203,14 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     }
 
     // Diagonal Up Left
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank + i <= 7 && file - i >= 0) {
             if (boardDisplay[sourceIndex + (i * 8) - i] != '') {
                 if (boardDisplay[sourceIndex + (i * 8) - i][0] != bishopCode[0]) {
                     possibleCaptures.push(sourceIndex + (i * 8) - i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex + (i * 8) - i)
         }
@@ -215,14 +218,14 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     }
 
     // Diagonal Down Right
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank - i >= 0 && file + i <= 7) {
             if (boardDisplay[sourceIndex - (i * 8) + i] != '') {
                 if (boardDisplay[sourceIndex - (i * 8) + i][0] != bishopCode[0]) {
                     possibleCaptures.push(sourceIndex - (i * 8) + i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex - (i * 8) + i)
         }
@@ -230,14 +233,14 @@ export function getBishopMoves(sourceIndex, bishopCode, boardDisplay) {
     }
 
     // Diagonal Down Left
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank - i >= 0 && file - i >= 0) {
             if (boardDisplay[sourceIndex - (i * 8) - i] != '') {
                 if (boardDisplay[sourceIndex - (i * 8) - i][0] != bishopCode[0]) {
                     possibleCaptures.push(sourceIndex - (i * 8) - i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex - (i * 8) - i)
         }
@@ -301,14 +304,14 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     }
 
     // Diagonal Up Right
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank + i <= 7 && file + i <= 7) {
             if (boardDisplay[sourceIndex + (i * 8) + i] != '') {
                 if (boardDisplay[sourceIndex + (i * 8) + i][0] != queenCode[0]) {
                     possibleCaptures.push(sourceIndex + (i * 8) + i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex + (i * 8) + i)
         }
@@ -316,14 +319,14 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     }
 
     // Diagonal Up Left
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank + i <= 7 && file - i >= 0) {
             if (boardDisplay[sourceIndex + (i * 8) - i] != '') {
                 if (boardDisplay[sourceIndex + (i * 8) - i][0] != queenCode[0]) {
                     possibleCaptures.push(sourceIndex + (i * 8) - i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex + (i * 8) - i)
         }
@@ -331,14 +334,14 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     }
 
     // Diagonal Down Right
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank - i >= 0 && file + i <= 7) {
             if (boardDisplay[sourceIndex - (i * 8) + i] != '') {
                 if (boardDisplay[sourceIndex - (i * 8) + i][0] != queenCode[0]) {
                     possibleCaptures.push(sourceIndex - (i * 8) + i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex - (i * 8) + i)
         }
@@ -346,14 +349,14 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     }
 
     // Diagonal Down Left
-    for (let i = 1; i <= 7; i++){
+    for (let i = 1; i <= 7; i++) {
         if (rank - i >= 0 && file - i >= 0) {
             if (boardDisplay[sourceIndex - (i * 8) - i] != '') {
                 if (boardDisplay[sourceIndex - (i * 8) - i][0] != queenCode[0]) {
                     possibleCaptures.push(sourceIndex - (i * 8) - i)
                     break
                 }
-                else{break}
+                else { break }
             }
             else possibleMoves.push(sourceIndex - (i * 8) - i)
         }
@@ -363,7 +366,7 @@ export function getQueenMoves(sourceIndex, queenCode, boardDisplay) {
     return { possibleMoves, possibleCaptures }
 }
 
-    
+
 
 
 export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
@@ -374,83 +377,83 @@ export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
 
     // Move Up
     if (rank + 1 <= 7) {
-            if (boardDisplay[sourceIndex + 8] != '') {
-                if (boardDisplay[sourceIndex + 8][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex + 8)
-                }
+        if (boardDisplay[sourceIndex + 8] != '') {
+            if (boardDisplay[sourceIndex + 8][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex + 8)
             }
-            else possibleMoves.push(sourceIndex + 8)  
         }
+        else possibleMoves.push(sourceIndex + 8)
+    }
 
     // Move Down    
     if (rank - 1 >= 0) {
-            if (boardDisplay[sourceIndex - 8] != '') {
-                if (boardDisplay[sourceIndex - 8][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex - 8)
-                }
+        if (boardDisplay[sourceIndex - 8] != '') {
+            if (boardDisplay[sourceIndex - 8][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex - 8)
             }
-            else possibleMoves.push(sourceIndex - 8) 
         }
-    
+        else possibleMoves.push(sourceIndex - 8)
+    }
+
     // Move Right
     if (file + 1 <= 7) {
-            if (boardDisplay[sourceIndex + 1] != '') {
-                if (boardDisplay[sourceIndex + 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex + 1)
-                }
+        if (boardDisplay[sourceIndex + 1] != '') {
+            if (boardDisplay[sourceIndex + 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex + 1)
             }
-            else possibleMoves.push(sourceIndex + 1)
         }
+        else possibleMoves.push(sourceIndex + 1)
+    }
 
     //Move Left
     if (file - 1 >= 0) {
-            if (boardDisplay[sourceIndex - 1] != '') {
-                if (boardDisplay[sourceIndex - 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex - 1)
-                }
+        if (boardDisplay[sourceIndex - 1] != '') {
+            if (boardDisplay[sourceIndex - 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex - 1)
             }
-            else possibleMoves.push(sourceIndex - 1)
         }
+        else possibleMoves.push(sourceIndex - 1)
+    }
 
     // Diagonal Up Right
     if (rank + 1 <= 7 && file + 1 <= 7) {
-            if (boardDisplay[sourceIndex + 8 + 1] != '') {
-                if (boardDisplay[sourceIndex + 8 + 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex + 8 + 1)
-                }
+        if (boardDisplay[sourceIndex + 8 + 1] != '') {
+            if (boardDisplay[sourceIndex + 8 + 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex + 8 + 1)
             }
-            else possibleMoves.push(sourceIndex + 8 + 1)  
         }
+        else possibleMoves.push(sourceIndex + 8 + 1)
+    }
 
     // Diagonal Up Left
-    if (rank + 1 <= 7 && file - 1 >= 0){
-            if (boardDisplay[sourceIndex + 8 - 1] != '') {
-                if (boardDisplay[sourceIndex + 8 - 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex + 8 - 1)
-                }
+    if (rank + 1 <= 7 && file - 1 >= 0) {
+        if (boardDisplay[sourceIndex + 8 - 1] != '') {
+            if (boardDisplay[sourceIndex + 8 - 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex + 8 - 1)
             }
-            else possibleMoves.push(sourceIndex + 8 - 1)  
-        }         
+        }
+        else possibleMoves.push(sourceIndex + 8 - 1)
+    }
 
     // Diagonal Down Right
     if (rank - 1 >= 0 && file + 1 <= 7) {
-            if (boardDisplay[sourceIndex - 8 + 1] != '') {
-                if (boardDisplay[sourceIndex - 8 + 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex - 8 + 1)
-                }
+        if (boardDisplay[sourceIndex - 8 + 1] != '') {
+            if (boardDisplay[sourceIndex - 8 + 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex - 8 + 1)
             }
-            else possibleMoves.push(sourceIndex - 8 + 1)  
-        } 
-        
-    // Diagonal Down Left
-    if (rank - 1 >= 0 && file - 1 >= 0){
-            if (boardDisplay[sourceIndex - 8 - 1] != '') {
-                if (boardDisplay[sourceIndex - 8 - 1][0] != kingCode[0]) {
-                    possibleCaptures.push(sourceIndex - 8 - 1)
-                }
-            }
-            else possibleMoves.push(sourceIndex - 8 - 1)  
         }
-    
+        else possibleMoves.push(sourceIndex - 8 + 1)
+    }
+
+    // Diagonal Down Left
+    if (rank - 1 >= 0 && file - 1 >= 0) {
+        if (boardDisplay[sourceIndex - 8 - 1] != '') {
+            if (boardDisplay[sourceIndex - 8 - 1][0] != kingCode[0]) {
+                possibleCaptures.push(sourceIndex - 8 - 1)
+            }
+        }
+        else possibleMoves.push(sourceIndex - 8 - 1)
+    }
+
     return { possibleMoves, possibleCaptures }
 }

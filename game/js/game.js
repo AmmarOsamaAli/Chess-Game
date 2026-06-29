@@ -18,6 +18,9 @@ const whiteTimerBtn = document.querySelector('#timer-white')
 const blackTimerBtn = document.querySelector('#timer-black')
 const playerTurnIndicator = document.querySelector('#player-turn-indicator')
 const moveHistory = document.querySelector('#move-history')
+const promotionDropdownWhite = document.querySelector('#show-promotion-white')
+const promotionDropdownBlack = document.querySelector('#show-promotion-black')
+const PromotionPiece = document.querySelectorAll('.promote-piece')
 
 /*---------------------------Constant--------------------------------*/
 
@@ -44,13 +47,13 @@ const pieceSVG = {
 const boardDisplay = [
 
     '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', 'bP', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', 'wQ', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', 'bP', '', '', '', '',
-    '', '', '', '', 'bK', '', '', '',
+    '', '', '', 'wP', '', '', '', '',
+    '', '', '', '', '', '', '', '',
 ]
 
 
@@ -67,6 +70,7 @@ let blackTimer = 0
 let turn = 'white'
 let timer = 0
 let selectedSourceIndex = null
+let promotionIndex = null
 let possibleMoves = { possibleMoves: [], possibleCaptures: [] }
 let chessMove = null
 let moveCount = 0
@@ -159,7 +163,6 @@ function getBoardCoordinate(codeOfIndex) {
     chessMove = moveEntry
     moveHistory.appendChild(moveEntry)
     moveHistory.scrollTop = moveHistory.scrollHeight
-    console.log(`${file}${rank}`)
 }
 
 // This function clears the possible moves highlights
@@ -198,6 +201,28 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
         dot.classList.add('capture-circle')
         oneSquare.appendChild(dot)
     }
+}
+
+function handlePromtion(event) {
+    const pieceID = event.target.id
+    const pieceMap = {
+        'White-Queen': "wQ",
+        'White-Bishop': "wB",
+        'White-Knight': "wN",
+        'White-Rook': "wR",
+
+        'Black-Queen': "bQ",
+        'Black-Bishop': "bB",
+        'Black-Knight': "bN",
+        'Black-Rook': "bR",
+    }
+
+    boardDisplay[promotionIndex] = pieceMap[pieceID]
+    promotionDropdownWhite.style.display = "none"
+    promotionDropdownBlack.style.display = "none"
+
+    deployBoardPieces()
+    promotionIndex = null
 }
 
 // This function is the main function for moving all the pieces
@@ -263,6 +288,31 @@ function movePiece(movePieceCode) {
         else {
             boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
             boardDisplay[selectedSourceIndex] = ''
+
+            const movedPiece = boardDisplay[targetIndex]
+
+            if ((movedPiece === 'wP' && Math.floor(targetIndex / 8) === 7) ||
+                (movedPiece === 'bP' && Math.floor(targetIndex / 8) === 0)) {
+
+                promotionIndex = targetIndex
+
+                if (movedPiece === 'wP') {
+                    promotionDropdownWhite.style.display = 'flex'
+                }
+                else {
+                    promotionDropdownBlack.style.display = 'flex'
+                }
+
+                selectedSourceIndex = null
+                possibleMoves = { possibleMoves: [], possibleCaptures: [] }
+                clearPossibleMoveHighlights()
+                getBoardCoordinate(targetIndex)
+                deployBoardPieces()
+                swithcPlayerTurn()
+
+                return
+            }
+
             selectedSourceIndex = null
             possibleMoves = { possibleMoves: [], possibleCaptures: [] }
             clearPossibleMoveHighlights()
@@ -335,7 +385,11 @@ function simualteMoves(sourceIndex, targetIndex) {
     boardCopy = boardDisplay.slice()
     boardCopy[targetIndex] = boardCopy[sourceIndex]
     boardCopy[sourceIndex] = ''
-    if (checkForCheck(boardCopy) === true) {
+    // console.log(`simulating move from ${sourceIndex} to ${targetIndex}`)
+    // console.log(`board Copy: ${boardCopy}`)
+    // console.log(`Check Result: ${checkForCheck(boardCopy)}`)
+    // console.log('sourceIndex:', sourceIndex, 'targetIndex:', targetIndex, 'type:', typeof targetIndex)
+    if (checkForCheck(boardCopy)) {
         return false
     }
     else { return true }
@@ -345,11 +399,15 @@ function simualteMoves(sourceIndex, targetIndex) {
 
 // This function checks who is the winner
 function checkForWinner() {
-    if (checkForCheckmate(boardDisplay))
-        if (turn === 'white')
+    if (checkForCheckmate())
+        if (turn === 'white') {
             winner = 'black'
-        else
+            playerTurnIndicator.innerHTML = 'The Winner is: <span style="color: #EAEDD1">Black</span>'
+        }
+        else {
             winner = 'white'
+            playerTurnIndicator.innerHTML = 'The Winner is: <span style="color: #EAEDD1">White</span>'
+        }
 }
 
 // This functions checks if there is a draw
@@ -411,14 +469,14 @@ function checkForStalemate() {
     })
 
     if (countMoves === 0 && !checkForCheck(boardDisplay)) {
-        playerTurnIndicator.innerHTML = '<span style="color: grey">Stalemate. The King has No Moves, and There is no Check</span>' 
+        playerTurnIndicator.innerHTML = '<span style="color: grey">Stalemate. The King has No Moves, and There is no Check</span>'
         return true
     }
     else { return false }
 }
 
 // This function checks if there is a check on the king
-function checkForCheck(board) {
+function checkForCheck(boardDisplay) {
     let kingIndex = null
     let queenCaptures = []
     let pawnCaptures = []
@@ -433,45 +491,45 @@ function checkForCheck(board) {
     boardDisplay.forEach((oneSquare, index) => {
         if (oneSquare[0] === 'b' && turn === 'white') {
             if (oneSquare === 'bP') {
-                const moves = getPawnMoves(index, oneSquare, board)
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
                 pawnCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'bN') {
-                const moves = getKnightMoves(index, oneSquare, board)
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
                 knightCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'bB') {
-                const moves = getBishopMoves(index, oneSquare, board)
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
                 bishopCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'bR') {
-                const moves = getRookMoves(index, oneSquare, board)
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
                 rookCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'bQ') {
-                const moves = getQueenMoves(index, oneSquare, board)
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
                 queenCaptures.push(...moves.possibleCaptures)
             }
         }
         else if (oneSquare[0] === 'w' && turn === 'black') {
             if (oneSquare === 'wP') {
-                const moves = getPawnMoves(index, oneSquare, board)
+                const moves = getPawnMoves(index, oneSquare, boardDisplay)
                 pawnCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'wN') {
-                const moves = getKnightMoves(index, oneSquare, board)
+                const moves = getKnightMoves(index, oneSquare, boardDisplay)
                 knightCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'wB') {
-                const moves = getBishopMoves(index, oneSquare, board)
+                const moves = getBishopMoves(index, oneSquare, boardDisplay)
                 bishopCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'wR') {
-                const moves = getRookMoves(index, oneSquare, board)
+                const moves = getRookMoves(index, oneSquare, boardDisplay)
                 rookCaptures.push(...moves.possibleCaptures)
             }
             else if (oneSquare === 'wQ') {
-                const moves = getQueenMoves(index, oneSquare, board)
+                const moves = getQueenMoves(index, oneSquare, boardDisplay)
                 queenCaptures.push(...moves.possibleCaptures)
             }
         }
@@ -557,6 +615,10 @@ allSqaure.forEach((oneSquare) => {
     oneSquare.addEventListener('click', getPieceCode)
 })
 
+// To get Piece image for promotion
+PromotionPiece.forEach(onePiece => {
+    onePiece.addEventListener('click', handlePromtion)
+})
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)
