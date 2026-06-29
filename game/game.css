@@ -239,29 +239,7 @@ body {
     height: 560px;
     position: absolute;
     background-color: rgb(128, 128, 128, 0.9);
-    transform: rotate(180deg);
     z-index: 10;
-}
-
-#show-promotion-white p{
-    margin: 15px;
-    font-weight: 700;
-    color: white;
-}
-
-#show-promotion-white img{
-    transform: rotate(360deg);
-}
-
-
-#show-promotion-black p{
-     margin: 15px;
-    font-weight: 700;
-    color: black;
-}
-
-#show-promotion-white li,#show-promotion-black li{
-    list-style-type: none;
 }
 
 #show-promotion-black {
@@ -274,9 +252,34 @@ body {
     width: 560px;
     height: 560px;
     position: absolute;
+    transform: rotate(180deg);
     background-color: rgb(128, 128, 128, 0.9);
     z-index: 10;
 }
+
+#show-promotion-white p {
+    margin: 15px;
+    font-weight: 700;
+    color: white;
+}
+
+#show-promotion-black img {
+    transform: rotate(360deg);
+}
+
+
+#show-promotion-black p {
+    margin: 15px;
+    font-weight: 700;
+    color: black;
+}
+
+#show-promotion-white li,
+#show-promotion-black li {
+    list-style-type: none;
+}
+
+
 
 
 #show-winner-screen-white {
@@ -289,6 +292,7 @@ body {
     width: 560px;
     height: 560px;
     position: absolute;
+    transform: rotate(180deg);
     background-color: rgb(128, 128, 128, 0.9);
     z-index: 10;
 }
@@ -307,25 +311,40 @@ body {
     z-index: 10;
 }
 
-#winner-heading{
+#winner-heading {
     font-size: 50px;
     font-weight: 700;
     color: white;
 }
 
-#winner-white-body{
+#winner-white-body {
     font-size: 40px;
     font-weight: 500;
     color: #EAEDD1;
 }
 
-#winner-black-body{
+#winner-black-body {
     font-size: 40px;
     font-weight: 500;
     color: #9fd05d;
 }
 
-#show-draw-screen {
+#show-draw-screen-white {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    width: 560px;
+    height: 560px;
+    position: absolute;
+    transform: rotate(180deg);
+    background-color: rgb(128, 128, 128, 0.9);
+    z-index: 10;
+}
+
+#show-draw-screen-black {
     display: none;
     flex-direction: column;
     justify-content: center;
@@ -339,7 +358,7 @@ body {
     z-index: 10;
 }
 
-#draw-body{
+#draw-body {
     color: rgb(255, 255, 255);
 }
 

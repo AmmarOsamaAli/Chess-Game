@@ -23,7 +23,9 @@ const promotionDropdownBlack = document.querySelector('#show-promotion-black')
 const PromotionPiece = document.querySelectorAll('.promote-piece')
 const showWinnerWhite = document.querySelector('#show-winner-screen-white')
 const showWinnerBlack = document.querySelector('#show-winner-screen-black')
-const showDraw = document.querySelector('#show-draw-screen')
+const showDrawWhite = document.querySelector('#show-draw-screen-white')
+const showDrawBlack = document.querySelector('#show-draw-screen-black')
+
 
 
 /*---------------------------Constant--------------------------------*/
@@ -48,29 +50,29 @@ const pieceSVG = {
 
 }
 
-// const boardDisplay = [
-
-//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
-// ]
-
 const boardDisplay = [
 
+    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', 'wQ', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', 'bK',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
+
+// const boardDisplay = [
+
+//     '', '', '', '', '', '', '', '',
+//     '', 'bP', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', 'bQ', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', 'bP', '', '', '', 'wP', '', '',
+//     '', '', '', '', '', 'wK', '', '',
+// ]
 
 
 
@@ -78,8 +80,6 @@ const boardDisplay = [
 /*---------------------------Variables--------------------------------*/
 
 let winner = false
-let draw = false
-let check = false
 let whiteTimer = 0
 let blackTimer = 0
 let turn = 'white'
@@ -107,7 +107,7 @@ function getTimeFromURL() {
 
 // Display Timer 
 function displayTimer() {
-    const displayCountDownTimer = setTimeout(() => {
+    setTimeout(() => {
         const minutes = Math.floor(timer / 60)
         const seconds = timer % 60
         const formattedMinutes = String(minutes).padStart(2, '0')
@@ -136,9 +136,16 @@ function updateTimer() {
             const formattedSeconds = String(seconds).padStart(2, '0')
             blackTimerBtn.textContent = `${formattedMinutes}:${formattedSeconds}`
         }
-        else if (whiteTimer === 0 || blackTimer === 0) {
-            clearInterval(countDownTimer)
+
+        if (whiteTimer === 0) {
+            showWinnerBlack.style.display = 'flex'
             checkForWinner()
+            clearInterval(CountDownTimer)
+        }
+        else if (blackTimer === 0) {
+            showWinnerWhite.style.display = 'flex'
+            checkForWinner()
+            clearInterval(CountDownTimer)
         }
     }, 1000)
 }
@@ -155,7 +162,7 @@ function getPieceCode() {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
     const pieceCode = boardDisplay[index]
-    movePiece(pieceCode)
+    movePiece(pieceCode, event)
 }
 
 // This function gets the Code in chess terms like e4, or b6
@@ -198,8 +205,8 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
 
-    highlightedMoves.possibleMoves = highlightedMoves.possibleMoves.filter(index => simualteMoves(pieceIndex, pieceCode))
-    highlightedMoves.possibleCaptures = highlightedMoves.possibleCaptures.filter(index => simualteMoves(pieceIndex, pieceCode))
+    highlightedMoves.possibleMoves = highlightedMoves.possibleMoves.filter(index => simulateMoves(pieceIndex, index))
+    highlightedMoves.possibleCaptures = highlightedMoves.possibleCaptures.filter(index => simulateMoves(pieceIndex, index))
 
     for (let oneSquareMove of highlightedMoves.possibleMoves) {
         const oneSquare = document.getElementById(`sqr-${oneSquareMove + 1}`)
@@ -218,6 +225,7 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     }
 }
 
+// This function handles the promotion of the pawn by making the player choose the piece he want to promote to
 function handlePromtion(event) {
     const pieceID = event.target.id
     const pieceMap = {
@@ -237,11 +245,38 @@ function handlePromtion(event) {
     promotionDropdownBlack.style.display = "none"
 
     deployBoardPieces()
+    switchPlayerTurn()
+    checkForWinner()
+
+    if (winner) {
+        if (turn === 'white') {
+            showWinnerBlack.style.display = 'flex'
+        }
+        else {
+            showWinnerWhite.style.display = 'flex'
+        }
+    }
+    if (checkForStalemate() && !checkForCheck(boardDisplay)) {
+        if (turn === 'white') {
+            showDrawBlack.style.display = 'flex'
+        }
+        else {
+            showDrawWhite.style.display = 'flex'
+        }
+        return
+    }
+    if (checkForCheck(boardDisplay) && !winner) {
+        if (turn === 'white')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+        else if (turn === 'black')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+    }
+
     promotionIndex = null
 }
 
 // This function is the main function for moving all the pieces
-function movePiece(movePieceCode) {
+function movePiece(movePieceCode, event) {
     const pieceSquare = event.target.closest('.sqr')
     let pieceIndex = getSquareIndex(pieceSquare.id)
     let pieceCode = boardDisplay[pieceIndex]
@@ -298,7 +333,7 @@ function movePiece(movePieceCode) {
     let targetIndex = pieceIndex
     const allValidMoves = [...possibleMoves.possibleMoves, ...possibleMoves.possibleCaptures]
     if (allValidMoves.includes(targetIndex)) {
-        if (simualteMoves(selectedSourceIndex, targetIndex) === false)
+        if (simulateMoves(selectedSourceIndex, targetIndex) === false)
             return
         else {
             boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
@@ -323,7 +358,6 @@ function movePiece(movePieceCode) {
                 clearPossibleMoveHighlights()
                 getBoardCoordinate(targetIndex)
                 deployBoardPieces()
-                swithcPlayerTurn()
 
                 return
             }
@@ -333,7 +367,7 @@ function movePiece(movePieceCode) {
             clearPossibleMoveHighlights()
             getBoardCoordinate(targetIndex)
             deployBoardPieces()
-            swithcPlayerTurn()
+            switchPlayerTurn()
             checkForWinner()
             if (winner) {
                 if (turn === 'white') {
@@ -344,7 +378,12 @@ function movePiece(movePieceCode) {
                 }
             }
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
-                showDraw.style.display = 'flex'
+                if (turn === 'white') {
+                    showDrawBlack.style.display = 'flex'
+                }
+                else {
+                    showDrawWhite.style.display = 'flex'
+                }
                 return
             }
             if (checkForCheck(boardDisplay)) {
@@ -363,8 +402,7 @@ function movePiece(movePieceCode) {
 
 // This function checks who turn is it
 function checkPlayerTurn(pieceCode) {
-    let pieceCodeSplit = []
-    pieceCodeSplit = pieceCode.slice(0, 1)
+    let pieceCodeSplit = pieceCode.slice(0, 1)
     if (pieceCodeSplit === 'w' && turn === 'white') {
         return true
     }
@@ -381,7 +419,7 @@ function checkPlayerTurn(pieceCode) {
 }
 
 // This function switches the player turn
-function swithcPlayerTurn() {
+function switchPlayerTurn() {
     if (turn === 'white') {
         turn = 'black'
         chessBoard.classList.add('board-flipped')
@@ -399,7 +437,7 @@ function swithcPlayerTurn() {
 
 
 // This function will create a copy of displayBoard, in order to check if the next move will result in a check or no
-function simualteMoves(sourceIndex, targetIndex) {
+function simulateMoves(sourceIndex, targetIndex) {
     let boardCopy = []
     boardCopy = boardDisplay.slice()
     boardCopy[targetIndex] = boardCopy[sourceIndex]
@@ -414,6 +452,9 @@ function simualteMoves(sourceIndex, targetIndex) {
 
 // This function checks who is the winner
 function checkForWinner() {
+
+    winner = false
+
     if (checkForCheckmate())
         if (turn === 'white') {
             winner = 'black'
@@ -426,56 +467,81 @@ function checkForWinner() {
 // This functions checks if there is a draw
 function checkForStalemate() {
     let countMoves = 0
+    let moves
     boardDisplay.forEach((oneSquare, index) => {
-        if (oneSquare[0] === 'w' && turn === 'white') {
+        if (oneSquare && oneSquare[0] === 'w' && turn === 'white') {
             if (oneSquare === 'wP') {
-                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'wN') {
-                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'wB') {
-                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'wR') {
-                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'wQ') {
-                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'wK') {
-                const moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
         }
-        else if (oneSquare[0] === 'b' && turn === 'black') {
+        else if (oneSquare && oneSquare[0] === 'b' && turn === 'black') {
             if (oneSquare === 'bP') {
-                const moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'bN') {
-                const moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'bB') {
-                const moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'bR') {
-                const moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'bQ') {
-                const moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
             else if (oneSquare === 'bK') {
-                const moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
                 countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
         }
@@ -490,86 +556,151 @@ function checkForStalemate() {
 // This function checks if there is a check on the king
 function checkForCheck(boardDisplay) {
     let kingIndex = null
-    let queenCaptures = []
-    let pawnCaptures = []
-    let knightCaptures = []
-    let bishopCaptures = []
-    let rookCaptures = []
+    let enemyCaptures = []
+    let moves = null
     boardDisplay.forEach((oneSquare, index) => {
+        moves = null
         if (turn === 'white' && oneSquare === 'wK') kingIndex = index
         else if (turn === 'black' && oneSquare === 'bK') kingIndex = index
     })
 
     boardDisplay.forEach((oneSquare, index) => {
-        if (oneSquare[0] === 'b' && turn === 'white') {
+        if (!oneSquare) return
+        if (oneSquare && oneSquare[0] === 'b' && turn === 'white') {
             if (oneSquare === 'bP') {
-                const moves = getPawnMoves(index, oneSquare, boardDisplay)
-                pawnCaptures.push(...moves.possibleCaptures)
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'bN') {
-                const moves = getKnightMoves(index, oneSquare, boardDisplay)
-                knightCaptures.push(...moves.possibleCaptures)
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'bB') {
-                const moves = getBishopMoves(index, oneSquare, boardDisplay)
-                bishopCaptures.push(...moves.possibleCaptures)
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'bR') {
-                const moves = getRookMoves(index, oneSquare, boardDisplay)
-                rookCaptures.push(...moves.possibleCaptures)
+                moves = getRookMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'bQ') {
-                const moves = getQueenMoves(index, oneSquare, boardDisplay)
-                queenCaptures.push(...moves.possibleCaptures)
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+            }
+            else if (oneSquare === 'bK') {
+                moves = getKingMoves(index, oneSquare, boardDisplay)
             }
         }
-        else if (oneSquare[0] === 'w' && turn === 'black') {
+        else if (oneSquare && oneSquare[0] === 'w' && turn === 'black') {
             if (oneSquare === 'wP') {
-                const moves = getPawnMoves(index, oneSquare, boardDisplay)
-                pawnCaptures.push(...moves.possibleCaptures)
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'wN') {
-                const moves = getKnightMoves(index, oneSquare, boardDisplay)
-                knightCaptures.push(...moves.possibleCaptures)
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'wB') {
-                const moves = getBishopMoves(index, oneSquare, boardDisplay)
-                bishopCaptures.push(...moves.possibleCaptures)
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'wR') {
-                const moves = getRookMoves(index, oneSquare, boardDisplay)
-                rookCaptures.push(...moves.possibleCaptures)
+                moves = getRookMoves(index, oneSquare, boardDisplay)
             }
             else if (oneSquare === 'wQ') {
-                const moves = getQueenMoves(index, oneSquare, boardDisplay)
-                queenCaptures.push(...moves.possibleCaptures)
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+            }
+            else if (oneSquare === 'wK') {
+                moves = getKingMoves(index, oneSquare, boardDisplay)
             }
         }
+        if (moves) {
+            enemyCaptures.push(...moves.possibleCaptures)
+        }
     })
-    if (pawnCaptures.includes(kingIndex) || knightCaptures.includes(kingIndex) || bishopCaptures.includes(kingIndex)
-        || rookCaptures.includes(kingIndex) || queenCaptures.includes(kingIndex))
-        return true
-    else return false
+
+    return enemyCaptures.includes(kingIndex)
+
 }
 
 // This function checks if there is a checkmate on the king
 function checkForCheckmate() {
+    if (!checkForCheck(boardDisplay))
+        return false
     let countMoves = 0
+    let moves
     boardDisplay.forEach((oneSquare, index) => {
-        if (oneSquare[0] === 'w' && turn === 'white') {
-            if (oneSquare === 'wK') {
-                const kingMoves = getKingMoves(index, oneSquare, boardDisplay)
-                countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
+        if (oneSquare && oneSquare[0] === 'w' && turn === 'white') {
+            if (oneSquare === 'wP') {
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wN') {
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wB') {
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wR') {
+                moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wQ') {
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'wK') {
+                moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
         }
-        else if (oneSquare[0] === 'b' && turn === 'black') {
-            if (oneSquare === 'bK') {
-                const kingMoves = getKingMoves(index, oneSquare, boardDisplay)
-                countMoves += kingMoves.possibleMoves.length + kingMoves.possibleCaptures.length
+        else if (oneSquare && oneSquare[0] === 'b' && turn === 'black') {
+            if (oneSquare === 'bP') {
+                moves = getPawnMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bN') {
+                moves = getKnightMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bB') {
+                moves = getBishopMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bR') {
+                moves = getRookMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bQ') {
+                moves = getQueenMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
+            }
+            else if (oneSquare === 'bK') {
+                moves = getKingMoves(index, oneSquare, boardDisplay)
+                moves.possibleMoves = moves.possibleMoves.filter(move => simulateMoves(index, move))
+                moves.possibleCaptures = moves.possibleCaptures.filter(move => simulateMoves(index, move))
+                countMoves += moves.possibleMoves.length + moves.possibleCaptures.length
             }
         }
     })
-    if (countMoves === 0 && checkForStalemate() === false && checkForCheck(boardDisplay))
+
+    if (countMoves === 0 && checkForStalemate() === false)
         return true
     else return false
 }
@@ -610,12 +741,12 @@ init()
 
 
 //Authentication
-function goToLoginInPage() {
+function goToLoginInPage(event) {
     if (event.target.id === 'login-btn')
         console.log("Login")
 }
 
-function goToSignUpPage() {
+function goToSignUpPage(event) {
     if (event.target.id === 'signup-btn')
         console.log("Sign Up")
 }
