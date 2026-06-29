@@ -223,7 +223,7 @@ body {
 }
 
 .black-move {
-    color: rgb(159, 208, 93);
+    color: #9fd05d;
     font-size: 20px;
     font-weight: 600;
 }
@@ -238,7 +238,7 @@ body {
     width: 560px;
     height: 560px;
     position: absolute;
-    background-color: rgb(128, 128, 128, 0.8);
+    background-color: rgb(128, 128, 128, 0.9);
     transform: rotate(180deg);
     z-index: 10;
 }
@@ -274,6 +274,76 @@ body {
     width: 560px;
     height: 560px;
     position: absolute;
-    background-color: rgb(128, 128, 128, 0.8);
+    background-color: rgb(128, 128, 128, 0.9);
     z-index: 10;
+}
+
+
+#show-winner-screen-white {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    width: 560px;
+    height: 560px;
+    position: absolute;
+    background-color: rgb(128, 128, 128, 0.9);
+    z-index: 10;
+}
+
+#show-winner-screen-black {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    width: 560px;
+    height: 560px;
+    position: absolute;
+    background-color: rgb(128, 128, 128, 0.9);
+    z-index: 10;
+}
+
+#winner-heading{
+    font-size: 50px;
+    font-weight: 700;
+    color: white;
+}
+
+#winner-white-body{
+    font-size: 40px;
+    font-weight: 500;
+    color: #EAEDD1;
+}
+
+#winner-black-body{
+    font-size: 40px;
+    font-weight: 500;
+    color: #9fd05d;
+}
+
+#show-draw-screen {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    width: 560px;
+    height: 560px;
+    position: absolute;
+    background-color: rgb(128, 128, 128, 0.9);
+    z-index: 10;
+}
+
+#draw-body{
+    color: rgb(255, 255, 255);
+}
+
+#draw-heading {
+    font-size: 40px;
+    color: rgb(0, 0, 0)
 }

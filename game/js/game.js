@@ -21,6 +21,10 @@ const moveHistory = document.querySelector('#move-history')
 const promotionDropdownWhite = document.querySelector('#show-promotion-white')
 const promotionDropdownBlack = document.querySelector('#show-promotion-black')
 const PromotionPiece = document.querySelectorAll('.promote-piece')
+const showWinnerWhite = document.querySelector('#show-winner-screen-white')
+const showWinnerBlack = document.querySelector('#show-winner-screen-black')
+const showDraw = document.querySelector('#show-draw-screen')
+
 
 /*---------------------------Constant--------------------------------*/
 
@@ -44,18 +48,29 @@ const pieceSVG = {
 
 }
 
+// const boardDisplay = [
+
+//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
+// ]
+
 const boardDisplay = [
 
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', 'bP', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
+    '', '', '', '', '', 'wQ', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', 'wP', '', '', '', '',
     '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', 'bK',
 ]
-
 
 
 
@@ -321,11 +336,15 @@ function movePiece(movePieceCode) {
             swithcPlayerTurn()
             checkForWinner()
             if (winner) {
-                playerTurnIndicator.innerHTML = `${winner} Wins by CheckMate! <span style="color: #EAEDD1">White</span>`
-                return
+                if (turn === 'white') {
+                    showWinnerBlack.style.display = 'flex'
+                }
+                else {
+                    showWinnerWhite.style.display = 'flex'
+                }
             }
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
-                playerTurnIndicator.innerHTML = `Draw by Stalemate! <span style="color: #EAEDD1">White</span>`
+                showDraw.style.display = 'flex'
                 return
             }
             if (checkForCheck(boardDisplay)) {
@@ -385,10 +404,6 @@ function simualteMoves(sourceIndex, targetIndex) {
     boardCopy = boardDisplay.slice()
     boardCopy[targetIndex] = boardCopy[sourceIndex]
     boardCopy[sourceIndex] = ''
-    // console.log(`simulating move from ${sourceIndex} to ${targetIndex}`)
-    // console.log(`board Copy: ${boardCopy}`)
-    // console.log(`Check Result: ${checkForCheck(boardCopy)}`)
-    // console.log('sourceIndex:', sourceIndex, 'targetIndex:', targetIndex, 'type:', typeof targetIndex)
     if (checkForCheck(boardCopy)) {
         return false
     }
@@ -402,11 +417,9 @@ function checkForWinner() {
     if (checkForCheckmate())
         if (turn === 'white') {
             winner = 'black'
-            playerTurnIndicator.innerHTML = 'The Winner is: <span style="color: #EAEDD1">Black</span>'
         }
         else {
             winner = 'white'
-            playerTurnIndicator.innerHTML = 'The Winner is: <span style="color: #EAEDD1">White</span>'
         }
 }
 
@@ -469,7 +482,6 @@ function checkForStalemate() {
     })
 
     if (countMoves === 0 && !checkForCheck(boardDisplay)) {
-        playerTurnIndicator.innerHTML = '<span style="color: grey">Stalemate. The King has No Moves, and There is no Check</span>'
         return true
     }
     else { return false }
