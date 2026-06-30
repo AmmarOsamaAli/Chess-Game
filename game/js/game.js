@@ -64,13 +64,13 @@ const pieceSVG = {
 const boardDisplay = [
 
     'wR', '', '', 'wQ', 'wK', '', '', 'wR',
-    '', '', '', 'wP', 'wP', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', 'bP', 'bP', '', '', '',
-    'bR', '', '', 'bQ', 'bK', '', '', 'bR',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', 'bK', '', '', '',
 ]
 
 
@@ -83,6 +83,8 @@ let whiteTimer = 0
 let blackTimer = 0
 let turn = 'white'
 let timer = 0
+let countDownTimer = 0
+let gameOver = 0
 let selectedSourceIndex = null
 let promotionIndex = null
 let possibleMoves = { possibleMoves: [], possibleCaptures: [] }
@@ -123,7 +125,11 @@ function displayTimer() {
 
 
 function updateTimer() {
-    const CountDownTimer = setInterval(() => {
+    countDownTimer = setInterval(() => {
+        if(gameOver){
+            clearInterval(countDownTimer)
+            return
+        }
         if (whiteTimer > 0 && turn === 'white') {
             whiteTimer -= 1
             const minutes = Math.floor(whiteTimer / 60)
@@ -142,14 +148,14 @@ function updateTimer() {
         }
 
         if (whiteTimer === 0) {
+            endGame()
             showWinnerBlack.style.display = 'flex'
             checkForWinner()
-            clearInterval(CountDownTimer)
         }
         else if (blackTimer === 0) {
+            endGame()
             showWinnerWhite.style.display = 'flex'
             checkForWinner()
-            clearInterval(CountDownTimer)
         }
     }, 1000)
 }
@@ -208,7 +214,7 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
-    {   
+    {
         if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves.possibleMoves.push(...getCastlingMoves(pieceIndex, pieceCode))
     }
 
@@ -258,17 +264,19 @@ function handlePromtion(event) {
 
     if (checkForCheck(boardDisplay) && !winner) {
         if (turn === 'white')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
         else if (turn === 'black')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
     }
 
     if (checkForStalemate() && !checkForCheck(boardDisplay)) {
         if (turn === 'white') {
             showDrawBlack.style.display = 'flex'
+            endGame()
         }
         else {
             showDrawWhite.style.display = 'flex'
+            endGame()
         }
         return
     }
@@ -276,9 +284,11 @@ function handlePromtion(event) {
     if (winner) {
         if (turn === 'white') {
             showWinnerBlack.style.display = 'flex'
+            endGame()
         }
         else {
             showWinnerWhite.style.display = 'flex'
+            endGame()
         }
     }
 
@@ -310,33 +320,33 @@ function handleCastling(sourceIndex, targetIndex, movedPiece) {
     }
 }
 
-function getCastlingRight(sourceIndex, movedPiece){
-    if(movedPiece === 'wK') whiteKingMoved = true
-    else if(movedPiece === 'bK') blackKingMoved = true
+function getCastlingRight(sourceIndex, movedPiece) {
+    if (movedPiece === 'wK') whiteKingMoved = true
+    else if (movedPiece === 'bK') blackKingMoved = true
 
-    if(movedPiece === 'wR' && sourceIndex === 7) whiteKingSideRookMoved = true
-    else if(movedPiece === 'wR' && sourceIndex === 0) whiteQueenSideRookMoved = true
+    if (movedPiece === 'wR' && sourceIndex === 7) whiteKingSideRookMoved = true
+    else if (movedPiece === 'wR' && sourceIndex === 0) whiteQueenSideRookMoved = true
 
-    if(movedPiece === 'bR' && sourceIndex === 63) blackKingSideRookMoved = true
-    else if(movedPiece === 'bR' && sourceIndex === 56) blackQueenSideRookMoved = true
+    if (movedPiece === 'bR' && sourceIndex === 63) blackKingSideRookMoved = true
+    else if (movedPiece === 'bR' && sourceIndex === 56) blackQueenSideRookMoved = true
 }
 
 // This function gets the castling moves to actually show on the board
-function getCastlingMoves (sourceIndex, kingCode){
+function getCastlingMoves(sourceIndex, kingCode) {
     const possibleMoves = []
-    
-    if(checkForCheck(boardDisplay)) return possibleMoves
 
-    if(sourceIndex === 4 && kingCode === 'wK'){
-        if(!whiteKingMoved && !whiteKingSideRookMoved && boardDisplay[5] === '' && boardDisplay[6] === '' && boardDisplay[7] === 'wR' && simulateMoves(4,5) && simulateMoves(4,6))
+    if (checkForCheck(boardDisplay)) return possibleMoves
+
+    if (sourceIndex === 4 && kingCode === 'wK') {
+        if (!whiteKingMoved && !whiteKingSideRookMoved && boardDisplay[5] === '' && boardDisplay[6] === '' && boardDisplay[7] === 'wR' && simulateMoves(4, 5) && simulateMoves(4, 6))
             possibleMoves.push(6)
-        if(!whiteKingMoved && !whiteQueenSideRookMoved && boardDisplay[3] === '' && boardDisplay[2] === '' && boardDisplay[1] === '' && boardDisplay[0] === 'wR'  && simulateMoves(4,2) && simulateMoves(4,3))
+        if (!whiteKingMoved && !whiteQueenSideRookMoved && boardDisplay[3] === '' && boardDisplay[2] === '' && boardDisplay[1] === '' && boardDisplay[0] === 'wR' && simulateMoves(4, 2) && simulateMoves(4, 3))
             possibleMoves.push(2)
     }
-    if (sourceIndex === 60 && kingCode === 'bK'){
-        if(!blackKingMoved && !blackKingSideRookMoved && boardDisplay[61] === '' && boardDisplay[62] === '' && boardDisplay[63] === 'bR' && simulateMoves(60,61) && simulateMoves(60,62))
+    if (sourceIndex === 60 && kingCode === 'bK') {
+        if (!blackKingMoved && !blackKingSideRookMoved && boardDisplay[61] === '' && boardDisplay[62] === '' && boardDisplay[63] === 'bR' && simulateMoves(60, 61) && simulateMoves(60, 62))
             possibleMoves.push(62)
-        if(!blackKingMoved && !blackQueenSideRookMoved && boardDisplay[59] === '' && boardDisplay[58] === '' && boardDisplay[57] === '' && boardDisplay[56] === 'bR'  && simulateMoves(60,59) && simulateMoves(60,58))
+        if (!blackKingMoved && !blackQueenSideRookMoved && boardDisplay[59] === '' && boardDisplay[58] === '' && boardDisplay[57] === '' && boardDisplay[56] === 'bR' && simulateMoves(60, 59) && simulateMoves(60, 58))
             possibleMoves.push(58)
     }
 
@@ -453,17 +463,19 @@ function movePiece(movePieceCode, event) {
 
             if (checkForCheck(boardDisplay)) {
                 if (turn === 'white')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
                 else if (turn === 'black')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
             }
 
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
                 if (turn === 'white') {
                     showDrawBlack.style.display = 'flex'
+                    endGame()
                 }
                 else {
                     showDrawWhite.style.display = 'flex'
+                    endGame()
                 }
                 return
             }
@@ -471,9 +483,11 @@ function movePiece(movePieceCode, event) {
             if (winner) {
                 if (turn === 'white') {
                     showWinnerBlack.style.display = 'flex'
+                    endGame()
                 }
                 else {
                     showWinnerWhite.style.display = 'flex'
+                    endGame()
                 }
             }
         }
@@ -802,6 +816,11 @@ function deployBoardPieces() {
             oneSquare.appendChild(pieceImage)
         }
     })
+}
+
+function endGame() {
+    gameOver = true
+    clearInterval(countDownTimer)
 }
 
 
