@@ -373,7 +373,7 @@ export function getKingMoves(sourceIndex, kingCode, boardDisplay) {
     const possibleMoves = []
     const possibleCaptures = []
     const rank = Math.floor(sourceIndex / 8)
-    const file = sourceIndex % 8
+    const file = sourceIndex % 8        
 
     // Move Up
     if (rank + 1 <= 7) {

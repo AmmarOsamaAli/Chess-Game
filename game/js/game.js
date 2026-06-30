@@ -6,7 +6,6 @@ import { getQueenMoves } from './pieceMoves.js'
 import { getKingMoves } from './pieceMoves.js'
 
 
-
 /*---------------------------Cached Elemetns--------------------------------*/
 
 //Authentication
@@ -50,29 +49,29 @@ const pieceSVG = {
 
 }
 
-const boardDisplay = [
-
-    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
-]
-
 // const boardDisplay = [
 
+//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
 //     '', '', '', '', '', '', '', '',
-//     '', 'bP', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
-//     '', '', '', '', 'bQ', '', '', '',
 //     '', '', '', '', '', '', '', '',
-//     '', 'bP', '', '', '', 'wP', '', '',
-//     '', '', '', '', '', 'wK', '', '',
+//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 // ]
+
+const boardDisplay = [
+
+    'wR', '', '', 'wQ', 'wK', '', '', 'wR',
+    '', '', '', 'wP', 'wP', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', 'bP', 'bP', '', '', '',
+    'bR', '', '', 'bQ', 'bK', '', '', 'bR',
+]
 
 
 
@@ -89,7 +88,12 @@ let promotionIndex = null
 let possibleMoves = { possibleMoves: [], possibleCaptures: [] }
 let chessMove = null
 let moveCount = 0
-
+let whiteKingMoved = false
+let blackKingMoved = false
+let whiteKingSideRookMoved = false
+let whiteQueenSideRookMoved = false
+let blackKingSideRookMoved = false
+let blackQueenSideRookMoved = false
 
 
 /*---------------------------Functions--------------------------------*/
@@ -204,6 +208,10 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     else if (pieceCode === 'wB' || pieceCode === 'bB') highlightedMoves = getBishopMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wQ' || pieceCode === 'bQ') highlightedMoves = getQueenMoves(pieceIndex, pieceCode, boardDisplay)
     else if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
+    {   
+        if (pieceCode === 'wK' || pieceCode === 'bK') highlightedMoves.possibleMoves.push(...getCastlingMoves(pieceIndex, pieceCode))
+    }
+
 
     highlightedMoves.possibleMoves = highlightedMoves.possibleMoves.filter(index => simulateMoves(pieceIndex, index))
     highlightedMoves.possibleCaptures = highlightedMoves.possibleCaptures.filter(index => simulateMoves(pieceIndex, index))
@@ -248,14 +256,13 @@ function handlePromtion(event) {
     switchPlayerTurn()
     checkForWinner()
 
-    if (winner) {
-        if (turn === 'white') {
-            showWinnerBlack.style.display = 'flex'
-        }
-        else {
-            showWinnerWhite.style.display = 'flex'
-        }
+    if (checkForCheck(boardDisplay) && !winner) {
+        if (turn === 'white')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+        else if (turn === 'black')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
     }
+
     if (checkForStalemate() && !checkForCheck(boardDisplay)) {
         if (turn === 'white') {
             showDrawBlack.style.display = 'flex'
@@ -265,15 +272,79 @@ function handlePromtion(event) {
         }
         return
     }
-    if (checkForCheck(boardDisplay) && !winner) {
-        if (turn === 'white')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
-        else if (turn === 'black')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+
+    if (winner) {
+        if (turn === 'white') {
+            showWinnerBlack.style.display = 'flex'
+        }
+        else {
+            showWinnerWhite.style.display = 'flex'
+        }
     }
 
     promotionIndex = null
 }
+
+// This function handles the castling of the king and the rook
+function handleCastling(sourceIndex, targetIndex, movedPiece) {
+    if (movedPiece !== 'wK' && movedPiece !== 'bK')
+        return
+
+    if (Math.abs(targetIndex - sourceIndex) !== 2) return
+
+    if (sourceIndex === 4 && targetIndex == 6) {
+        boardDisplay[5] = boardDisplay[7]
+        boardDisplay[7] = ''
+    }
+    else if (sourceIndex === 4 && targetIndex === 2) {
+        boardDisplay[3] = boardDisplay[0]
+        boardDisplay[0] = ''
+    }
+    else if (sourceIndex === 60 && targetIndex === 62) {
+        boardDisplay[61] = boardDisplay[63]
+        boardDisplay[63] = ''
+    }
+    else if (sourceIndex === 60 && targetIndex === 58) {
+        boardDisplay[59] = boardDisplay[56]
+        boardDisplay[56] = ''
+    }
+}
+
+function getCastlingRight(sourceIndex, movedPiece){
+    if(movedPiece === 'wK') whiteKingMoved = true
+    else if(movedPiece === 'bK') blackKingMoved = true
+
+    if(movedPiece === 'wR' && sourceIndex === 7) whiteKingSideRookMoved = true
+    else if(movedPiece === 'wR' && sourceIndex === 0) whiteQueenSideRookMoved = true
+
+    if(movedPiece === 'bR' && sourceIndex === 63) blackKingSideRookMoved = true
+    else if(movedPiece === 'bR' && sourceIndex === 56) blackQueenSideRookMoved = true
+}
+
+// This function gets the castling moves to actually show on the board
+function getCastlingMoves (sourceIndex, kingCode){
+    const possibleMoves = []
+    
+    if(checkForCheck(boardDisplay)) return possibleMoves
+
+    if(sourceIndex === 4 && kingCode === 'wK'){
+        if(!whiteKingMoved && !whiteKingSideRookMoved && boardDisplay[5] === '' && boardDisplay[6] === '' && boardDisplay[7] === 'wR' && simulateMoves(4,5) && simulateMoves(4,6))
+            possibleMoves.push(6)
+        if(!whiteKingMoved && !whiteQueenSideRookMoved && boardDisplay[3] === '' && boardDisplay[2] === '' && boardDisplay[1] === '' && boardDisplay[0] === 'wR'  && simulateMoves(4,2) && simulateMoves(4,3))
+            possibleMoves.push(2)
+    }
+    if (sourceIndex === 60 && kingCode === 'bK'){
+        if(!blackKingMoved && !blackKingSideRookMoved && boardDisplay[61] === '' && boardDisplay[62] === '' && boardDisplay[63] === 'bR' && simulateMoves(60,61) && simulateMoves(60,62))
+            possibleMoves.push(62)
+        if(!blackKingMoved && !blackQueenSideRookMoved && boardDisplay[59] === '' && boardDisplay[58] === '' && boardDisplay[57] === '' && boardDisplay[56] === 'bR'  && simulateMoves(60,59) && simulateMoves(60,58))
+            possibleMoves.push(58)
+    }
+
+    return possibleMoves
+
+}
+
+
 
 // This function is the main function for moving all the pieces
 function movePiece(movePieceCode, event) {
@@ -325,6 +396,10 @@ function movePiece(movePieceCode, event) {
         else if (movePieceCode === 'wK' || movePieceCode === 'bK') {
             selectedSourceIndex = pieceIndex
             possibleMoves = getKingMoves(pieceIndex, pieceCode, boardDisplay)
+
+            const castleMoves = getCastlingMoves(pieceIndex, pieceCode)
+            possibleMoves.possibleMoves.push(...castleMoves)
+
             getSquareOfPossibleMoves(pieceIndex, pieceCode)
             return
         }
@@ -336,10 +411,16 @@ function movePiece(movePieceCode, event) {
         if (simulateMoves(selectedSourceIndex, targetIndex) === false)
             return
         else {
+
             boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
             boardDisplay[selectedSourceIndex] = ''
 
             const movedPiece = boardDisplay[targetIndex]
+
+            getCastlingRight(selectedSourceIndex, movedPiece)
+            handleCastling(selectedSourceIndex, targetIndex, movedPiece)
+
+
 
             if ((movedPiece === 'wP' && Math.floor(targetIndex / 8) === 7) ||
                 (movedPiece === 'bP' && Math.floor(targetIndex / 8) === 0)) {
@@ -369,14 +450,14 @@ function movePiece(movePieceCode, event) {
             deployBoardPieces()
             switchPlayerTurn()
             checkForWinner()
-            if (winner) {
-                if (turn === 'white') {
-                    showWinnerBlack.style.display = 'flex'
-                }
-                else {
-                    showWinnerWhite.style.display = 'flex'
-                }
+
+            if (checkForCheck(boardDisplay)) {
+                if (turn === 'white')
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span> Player Turn: <span style="color: #EAEDD1">White</span>'
+                else if (turn === 'black')
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span> Player Turn: <span style="color: #9FD05D">Black</span>'
             }
+
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
                 if (turn === 'white') {
                     showDrawBlack.style.display = 'flex'
@@ -386,11 +467,14 @@ function movePiece(movePieceCode, event) {
                 }
                 return
             }
-            if (checkForCheck(boardDisplay)) {
-                if (turn === 'white')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #EAEDD1">White</span>'
-                else if (turn === 'black')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check! Move The King.</span> Player Turn: <span style="color: #9FD05D">Black</span>'
+
+            if (winner) {
+                if (turn === 'white') {
+                    showWinnerBlack.style.display = 'flex'
+                }
+                else {
+                    showWinnerWhite.style.display = 'flex'
+                }
             }
         }
     } else {
