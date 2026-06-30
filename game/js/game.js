@@ -126,7 +126,7 @@ function displayTimer() {
 
 function updateTimer() {
     countDownTimer = setInterval(() => {
-        if(gameOver){
+        if (gameOver) {
             clearInterval(countDownTimer)
             return
         }
@@ -262,11 +262,15 @@ function handlePromtion(event) {
     switchPlayerTurn()
     checkForWinner()
 
-    if (checkForCheck(boardDisplay) && !winner) {
-        if (turn === 'white')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
-        else if (turn === 'black')
-            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
+    if (winner) {
+        if (turn === 'white') {
+            showWinnerBlack.style.display = 'flex'
+            endGame()
+        }
+        else {
+            showWinnerWhite.style.display = 'flex'
+            endGame()
+        }
     }
 
     if (checkForStalemate() && !checkForCheck(boardDisplay)) {
@@ -281,15 +285,11 @@ function handlePromtion(event) {
         return
     }
 
-    if (winner) {
-        if (turn === 'white') {
-            showWinnerBlack.style.display = 'flex'
-            endGame()
-        }
-        else {
-            showWinnerWhite.style.display = 'flex'
-            endGame()
-        }
+    if (checkForCheck(boardDisplay) && !winner) {
+        if (turn === 'white')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
+        else if (turn === 'black')
+            playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
     }
 
     promotionIndex = null
@@ -461,11 +461,15 @@ function movePiece(movePieceCode, event) {
             switchPlayerTurn()
             checkForWinner()
 
-            if (checkForCheck(boardDisplay)) {
-                if (turn === 'white')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
-                else if (turn === 'black')
-                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
+            if (winner) {
+                if (turn === 'white') {
+                    showWinnerBlack.style.display = 'flex'
+                    endGame()
+                }
+                else {
+                    showWinnerWhite.style.display = 'flex'
+                    endGame()
+                }
             }
 
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
@@ -480,17 +484,14 @@ function movePiece(movePieceCode, event) {
                 return
             }
 
-            if (winner) {
-                if (turn === 'white') {
-                    showWinnerBlack.style.display = 'flex'
-                    endGame()
-                }
-                else {
-                    showWinnerWhite.style.display = 'flex'
-                    endGame()
-                }
+            if (checkForCheck(boardDisplay)) {
+                if (turn === 'white')
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #EAEDD1">White</span>'
+                else if (turn === 'black')
+                    playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
             }
         }
+
     } else {
         selectedSourceIndex = null
         possibleMoves = { possibleMoves: [], possibleCaptures: [] }
