@@ -271,6 +271,7 @@ function handlePromtion(event) {
             showWinnerWhite.style.display = 'flex'
             endGame()
         }
+        return
     }
 
     if (checkForStalemate() && !checkForCheck(boardDisplay)) {
@@ -470,6 +471,7 @@ function movePiece(movePieceCode, event) {
                     showWinnerWhite.style.display = 'flex'
                     endGame()
                 }
+                return
             }
 
             if (checkForStalemate() && !checkForCheck(boardDisplay)) {
