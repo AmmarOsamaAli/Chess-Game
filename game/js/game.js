@@ -96,6 +96,8 @@ let whiteKingSideRookMoved = false
 let whiteQueenSideRookMoved = false
 let blackKingSideRookMoved = false
 let blackQueenSideRookMoved = false
+let lastMoveSourceIndex = 0
+let lastMoveTargetIndex = 0
 
 
 /*---------------------------Functions--------------------------------*/
@@ -428,8 +430,12 @@ function movePiece(movePieceCode, event) {
 
             const movedPiece = boardDisplay[targetIndex]
 
+            lastMoveSourceIndex = selectedSourceIndex
+            lastMoveTargetIndex = targetIndex
+
             getCastlingRight(selectedSourceIndex, movedPiece)
             handleCastling(selectedSourceIndex, targetIndex, movedPiece)
+
 
 
 
@@ -813,6 +819,11 @@ function deployBoardPieces() {
         const pieceCode = boardDisplay[squareIndex]
 
         oneSquare.innerHTML = ''
+        oneSquare.classList.remove('target-border')
+
+        if (squareIndex === lastMoveSourceIndex || squareIndex === lastMoveTargetIndex) {
+            oneSquare.classList.add('target-border')
+        }
         if (pieceCode) {
             const pieceImage = document.createElement('img')
             pieceImage.src = pieceSVG[pieceCode]
