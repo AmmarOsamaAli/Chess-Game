@@ -48,29 +48,44 @@ const pieceSVG = {
     bK: `./game-pieces/black-pieces-normal/king-black-normal.svg`,
 
 }
-
-const boardDisplay = [
-
-    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
-]
-
+//Starter Board
 // const boardDisplay = [
 
-//     'wR', '', '', 'wQ', 'wK', '', '', 'wR',
+//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
 //     '', '', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
+//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
+// ]
+
+
+// Check for CheckMate and Simluate Moves and Promotion
+const boardDisplay = [
+
+    '', '', '', '', 'wK', '', '', '',
+    '', '', 'bP', '', '', '', '', 'bB',
+    '', '', '', '', '', '', '', '',
+    '', '', 'bB', '', '', '', '', '',
+    '', '', '', '', '', '', 'wQ', '',
+    '', '', '', '', '', '', '', '',
+    '', 'wP', '', 'bP', 'bP', '', '', 'wR',
+    '', '', '', '', 'bK', '', '', '',
+]
+
+//Check for Stalemate and Simluate Moves
+// const boardDisplay = [
+
+//     '', '', '', '', '', '', '', '',
+//     '', '', 'bB', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
 //     '', '', '', '', '', '', '', '',
-//     '', '', '', '', 'bK', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', 'wQ', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', 'bK',
 // ]
 
 
@@ -106,7 +121,7 @@ let lastMoveTargetIndex = null
 
 function playMoveSound() {
     moveSound.currentTime = 0
-    moveSound.play().catch(error => console.log(error))
+    moveSound.play()
 }
 
 function playCaptureSound() {
@@ -118,7 +133,7 @@ function playCaptureSound() {
 //Get time from URL based on choice in Get Started Page
 function getTimeFromURL() {
     const URLTimer = new URLSearchParams(window.location.search)
-    const timerString = URLTimer.get('time')
+    const timerString = URLTimer.get('time') || '10 minutes'
     const timerInMinutes = timerString.split(' ')
     timer = timerInMinutes[0] * 60
     whiteTimer = timerInMinutes[0] * 60
@@ -179,10 +194,11 @@ function updateTimer() {
 function getSquareIndex(target) {
     let numberSplit = target.split('-')
     return Number(numberSplit[1] - 1)
+
 }
 
 // This function get the piece code
-function getPieceCode() {
+function getPieceCode(event) {
     const square = event.target.closest('.sqr')
     const index = getSquareIndex(square.id)
     const pieceCode = boardDisplay[index]
@@ -245,6 +261,7 @@ function getSquareOfPossibleMoves(pieceIndex, pieceCode) {
     }
 
     for (let oneSquareCapture of highlightedMoves.possibleCaptures) {
+        if (boardDisplay[oneSquareCapture] === 'wK' || boardDisplay[oneSquareCapture] === 'bK') continue
         const oneSquare = document.getElementById(`sqr-${oneSquareCapture + 1}`)
         if (!oneSquare) continue
         const dot = document.createElement('div')
@@ -269,6 +286,7 @@ function handlePromtion(event) {
     }
 
     boardDisplay[promotionIndex] = pieceMap[pieceID]
+    promotionIndex = null
     promotionDropdownWhite.style.display = "none"
     promotionDropdownBlack.style.display = "none"
 
@@ -306,8 +324,6 @@ function handlePromtion(event) {
         else if (turn === 'black')
             playerTurnIndicator.innerHTML = '<span style="color: red">Check!</span><br> Player Turn: <span style="color: #9FD05D">Black</span>'
     }
-
-    promotionIndex = null
 }
 
 // This function handles the castling of the king and the rook
