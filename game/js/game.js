@@ -49,31 +49,33 @@ const pieceSVG = {
 
 }
 
-// const boardDisplay = [
-
-//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
-// ]
-
 const boardDisplay = [
 
-    'wR', '', '', 'wQ', 'wK', '', '', 'wR',
+    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
     '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', 'bK', '', '', '',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
 ]
 
+// const boardDisplay = [
 
+//     'wR', '', '', 'wQ', 'wK', '', '', 'wR',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', 'bK', '', '', '',
+// ]
+
+
+const moveSound = new Audio('./sound-effects/move-self.mp3')
+const captureSound = new Audio('./sound-effects/capture.mp3')
 
 
 /*---------------------------Variables--------------------------------*/
@@ -96,11 +98,21 @@ let whiteKingSideRookMoved = false
 let whiteQueenSideRookMoved = false
 let blackKingSideRookMoved = false
 let blackQueenSideRookMoved = false
-let lastMoveSourceIndex = 0
-let lastMoveTargetIndex = 0
+let lastMoveSourceIndex = null
+let lastMoveTargetIndex = null
 
 
 /*---------------------------Functions--------------------------------*/
+
+function playMoveSound() {
+    moveSound.currentTime = 0
+    moveSound.play().catch(error => console.log(error))
+}
+
+function playCaptureSound() {
+    captureSound.currentTime = 0
+    captureSound.play()
+}
 
 
 //Get time from URL based on choice in Get Started Page
@@ -425,8 +437,16 @@ function movePiece(movePieceCode, event) {
             return
         else {
 
+            const isCapture = boardDisplay[targetIndex] !== ''
+
             boardDisplay[targetIndex] = boardDisplay[selectedSourceIndex]
             boardDisplay[selectedSourceIndex] = ''
+
+            if (isCapture) {
+                playCaptureSound()
+            } else {
+                playMoveSound()
+            }
 
             const movedPiece = boardDisplay[targetIndex]
 
@@ -435,9 +455,6 @@ function movePiece(movePieceCode, event) {
 
             getCastlingRight(selectedSourceIndex, movedPiece)
             handleCastling(selectedSourceIndex, targetIndex, movedPiece)
-
-
-
 
             if ((movedPiece === 'wP' && Math.floor(targetIndex / 8) === 7) ||
                 (movedPiece === 'bP' && Math.floor(targetIndex / 8) === 0)) {
@@ -821,7 +838,7 @@ function deployBoardPieces() {
         oneSquare.innerHTML = ''
         oneSquare.classList.remove('target-border')
 
-        if (squareIndex === lastMoveSourceIndex || squareIndex === lastMoveTargetIndex) {
+        if ((lastMoveSourceIndex !== null && squareIndex === lastMoveSourceIndex) || (lastMoveTargetIndex !== null && squareIndex === lastMoveTargetIndex)) {
             oneSquare.classList.add('target-border')
         }
         if (pieceCode) {
