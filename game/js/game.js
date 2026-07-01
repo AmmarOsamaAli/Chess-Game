@@ -32,7 +32,7 @@ const showDrawBlack = document.querySelector('#show-draw-screen-black')
 const pieceSVG = {
 
     //White Pieces 
-    wP: `./game-pieces/white-pieces-normal/pawn-white-normal.svg`,
+    wP: `./game-pieces/white-pieces-normal/pawn-white-normal-v2.svg`,
     wN: `./game-pieces/white-pieces-normal/knight-white-normal.svg`,
     wB: `./game-pieces/white-pieces-normal/bishop-white-normal.svg`,
     wR: `./game-pieces/white-pieces-normal/rook-white-normal.svg`,
