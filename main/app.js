@@ -1,5 +1,3 @@
-console.log('Welcome to My Chess Game')
-
 /*---------------------------Cached Elemetns--------------------------------*/
 
 const getStartedBtn = document.querySelector('#get-started-btn')
@@ -13,18 +11,18 @@ console.log(signUpBtn)
 
 /*---------------------------Functions--------------------------------*/
 
-function goToGetStartedPage (){
+function goToGetStartedPage (event){
     if(event.target.id === 'get-started-btn'){
-        window.location.href = '../get-started/index.html'
+        window.location.href = './get-started/index.html'
     }
 }
 
-function goToLoginInPage (){
+function goToLoginInPage (event){
     if(event.target.id === 'login-btn')
         console.log("Login")
 }
 
-function goToSignUpPage (){
+function goToSignUpPage (event){
     if(event.target.id === 'signup-btn')
         console.log("Sign Up")
 }
