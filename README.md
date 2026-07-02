@@ -37,9 +37,29 @@ Chess is one of the largest games worldwide, with over 600 million users. I deci
 
 ## Screenshots
 
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+![alt text](image-9.png)
+![alt text](image-10.png)
+![alt text](image-12.png)
+![alt text](image-11.png)
+![alt text](image-14.png)
+![alt text](image-13.png)
+
 ## Future Enhancements
 - Play Againsy Intelligent Bots with varying difficulty levels
 - Include Points System which depends on the piece you cpatured: pawn = 1, knight = 3, bishop = 3, rook = 5, queen = 8.
 - Include puzzles that gets harder as you progress to level up your chess skills
 
 ## Credits
+
+- Mr. Omar Kamal (https://github.com/omarakamal)
+- Mr. Zaid (https://github.com/justzaid)
+- Mrs. Israa Ashoor (https://github.com/ISRAA-ASHOOR)
