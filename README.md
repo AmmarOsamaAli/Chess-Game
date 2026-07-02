@@ -4,7 +4,7 @@
 
 - HTML5
 - CSS3
-- MD6 Javascript
+- Javascript
 - Git 
 - Github
 
@@ -22,7 +22,6 @@ Chess is one of the largest games worldwide, with over 600 million users. I deci
 - As a user, I want the timer to stop when it is the opponent's turn and start when it is my turn.
 - As a user, I want the game to end automatically and decide the winner based on who still has time left on the clock.
 - As a user, I want to win the game if my opponent can no longer move their queen, and I should lose if I can no longer move my queen.
-- As a user, when I capture an opponent's piece, I want to take its place with the piece I captured with, and I want to earn points depending on the piece: pawn = 1, knight = 3, bishop = 3, rook = 5, queen = 8.
 - As a user, I want the pawn to move two squares vertically only on its first move, and then only one square vertically after the first move.
 - As a user, I want the pawn to be able to capture an opponent's piece that is one square away diagonally to the right or left.
 - As a user, I want the rook to be able to move only horizontally and vertically across the board as long as it has clear squares in its path.
@@ -39,5 +38,8 @@ Chess is one of the largest games worldwide, with over 600 million users. I deci
 ## Screenshots
 
 ## Future Enhancements
+- Play Againsy Intelligent Bots with varying difficulty levels
+- Include Points System which depends on the piece you cpatured: pawn = 1, knight = 3, bishop = 3, rook = 5, queen = 8.
+- Include puzzles that gets harder as you progress to level up your chess skills
 
 ## Credits
