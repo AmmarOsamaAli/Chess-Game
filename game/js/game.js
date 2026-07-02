@@ -24,6 +24,7 @@ const showWinnerWhite = document.querySelector('#show-winner-screen-white')
 const showWinnerBlack = document.querySelector('#show-winner-screen-black')
 const showDrawWhite = document.querySelector('#show-draw-screen-white')
 const showDrawBlack = document.querySelector('#show-draw-screen-black')
+const playAgainBtn = document.querySelector('#play-again-btn')
 
 
 
@@ -49,17 +50,17 @@ const pieceSVG = {
 
 }
 //Starter Board
-const boardDisplay = [
+// const boardDisplay = [
 
-    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
-    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    '', '', '', '', '', '', '', '',
-    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
-    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
-]
+//     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+//     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     '', '', '', '', '', '', '', '',
+//     'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+//     'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
+// ]
 
 
 // Check for CheckMate and Simluate Moves and Promotion
@@ -76,17 +77,30 @@ const boardDisplay = [
 // ]
 
 //Check for Stalemate and Simluate Moves
-// const boardDisplay = [
+const boardDisplay = [
 
-//     '', '', '', '', '', '', '', '',
-//     '', '', 'bB', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', 'wQ', '', '',
-//     '', '', '', '', '', '', '', '',
-//     '', '', '', '', '', '', '', 'bK',
-// ]
+    '', '', '', '', '', '', '', '',
+    '', '', 'bB', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', 'wQ', '', '',
+    '', 'wR', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', 'bK',
+]
+
+// This is for the starter board
+const StarterboardDisplay = [
+
+    'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
+    'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '',
+    'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP', 'bP',
+    'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR',
+]
 
 
 const moveSound = new Audio('./sound-effects/move-self.mp3')
@@ -119,11 +133,13 @@ let lastMoveTargetIndex = null
 
 /*---------------------------Functions--------------------------------*/
 
+// This function plays the move sound
 function playMoveSound() {
     moveSound.currentTime = 0
     moveSound.play()
 }
 
+// This function plays the capture sound
 function playCaptureSound() {
     captureSound.currentTime = 0
     captureSound.play()
@@ -152,7 +168,7 @@ function displayTimer() {
     }, 1)
 }
 
-
+// This function updates the timer
 function updateTimer() {
     countDownTimer = setInterval(() => {
         if (gameOver) {
@@ -179,11 +195,13 @@ function updateTimer() {
         if (whiteTimer === 0) {
             endGame()
             showWinnerBlack.style.display = 'flex'
+            playAgainBtn.style.display = 'flex'
             checkForWinner()
         }
         else if (blackTimer === 0) {
             endGame()
             showWinnerWhite.style.display = 'flex'
+            playAgainBtn.style.display = 'flex'
             checkForWinner()
         }
     }, 1000)
@@ -297,10 +315,12 @@ function handlePromtion(event) {
     if (winner) {
         if (turn === 'white') {
             showWinnerBlack.style.display = 'flex'
+            playAgainBtn.style.display = 'flex'
             endGame()
         }
         else {
             showWinnerWhite.style.display = 'flex'
+            playAgainBtn.style.display = 'flex'
             endGame()
         }
         return
@@ -504,10 +524,12 @@ function movePiece(movePieceCode, event) {
             if (winner) {
                 if (turn === 'white') {
                     showWinnerBlack.style.display = 'flex'
+                    playAgainBtn.style.display = 'flex'
                     endGame()
                 }
                 else {
                     showWinnerWhite.style.display = 'flex'
+                    playAgainBtn.style.display = 'flex'
                     endGame()
                 }
                 return
@@ -870,6 +892,44 @@ function endGame() {
     clearInterval(countDownTimer)
 }
 
+function playAgain(event) {
+    if (event.target.id === 'play-again-btn') {
+        boardDisplay.forEach((oneSquare, index) => {
+            boardDisplay[index] = StarterboardDisplay[index]
+        })
+        showWinnerBlack.style.display = 'none'
+        showWinnerWhite.style.display = 'none'
+        showDrawBlack.style.display = 'none'
+        showDrawWhite.style.display = 'none'
+        clearInterval(countDownTimer)
+        winner = false
+        turn = 'white'
+        countDownTimer = 0
+        gameOver = 0
+        selectedSourceIndex = null
+        promotionIndex = null
+        possibleMoves = { possibleMoves: [], possibleCaptures: [] }
+        chessMove = null
+        moveCount = 0
+        whiteKingMoved = false
+        blackKingMoved = false
+        whiteKingSideRookMoved = false
+        whiteQueenSideRookMoved = false
+        blackKingSideRookMoved = false
+        blackQueenSideRookMoved = false
+        lastMoveSourceIndex = null
+        lastMoveTargetIndex = null
+        getTimeFromURL()
+        displayTimer()
+        updateTimer()
+        moveHistory.innerHTML = ''
+        clearPossibleMoveHighlights()
+        deployBoardPieces()
+        playerTurnIndicator.innerHTML = 'Player Turn: <span style="color: #EAEDD1">White</span>'
+        playAgainBtn.style.display = 'none'
+    }
+}
+
 
 function render() {
     deployBoardPieces()
@@ -912,6 +972,9 @@ allSqaure.forEach((oneSquare) => {
 PromotionPiece.forEach(onePiece => {
     onePiece.addEventListener('click', handlePromtion)
 })
+
+
+playAgainBtn.addEventListener('click', playAgain)
 
 //Authentication
 logInBtn.addEventListener('click', goToLoginInPage)
