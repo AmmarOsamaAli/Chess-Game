@@ -52,6 +52,7 @@ const pieceSVG = {
 //Starter Board
 const boardDisplay = [
 
+    
     'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR',
     'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP',
     '', '', '', '', '', '', '', '',
